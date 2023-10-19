@@ -63,6 +63,11 @@ h1 {
     color: white;
 }
 
+.btn:active {
+    background-color: rgba(100, 100, 100, 0.53);
+    color: white;
+}
+
 .btn {
     padding: 10px;
     border-radius: 5px;
@@ -73,7 +78,9 @@ h1 {
     max-width: 300px;
     transition-duration: 300ms;
     font-weight: 500;
-    color: black;   
+    color: black;
+    cursor: pointer;
+    user-select: none;
 }
 
 .btn-primary:hover {
@@ -81,6 +88,59 @@ h1 {
     box-shadow: 0px 0px 30px -5px rgba(0,0,0,0.86);
 }
 
+.btn-primary:active {
+    background-color: #05ca89;
+    box-shadow: 0px 0px 30px -5px rgba(0,0,0,0.86);
+}
+
 .btn-primary {
     background-color: white;
+}
+
+h2 {
+    font-size: medium;
+    font-weight: 500;
+    color: white;
+    overflow: hidden;
+    text-align: center;
+}
+
+h2:before,
+h2:after {
+  background-color: rgba(255, 255, 255, 0.63);
+  content: "";
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 110px;
+}
+
+h2:before {
+    right: 0.7em;
+    margin-left: -50%;
+}
+
+h2:after {
+    left: 0.7em;
+    margin-right: -50%;
+}
+
+.social {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    column-gap: 25px;
+    color: white;
+    font-size: 40px;
+}
+
+.social i {
+    transition-duration: 300ms;
+    cursor: pointer;
+}
+
+.social i:hover {
+    color: rgba(255, 255, 255, 0.63);
 }
