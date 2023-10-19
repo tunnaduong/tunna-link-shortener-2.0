@@ -169,9 +169,10 @@ h3 {
 
 table {
   border-collapse: collapse;
-  max-width: 333px;
+  max-width: 570px;
   width: 100%;
   color: white;
+  table-layout: fixed;
 }
 
 table td,
@@ -200,6 +201,7 @@ table tr:hover {
   transition: all 0.2s ease-in-out;
   color: #fff;
   background-color: #09a5be;
+  margin-right: 5px;
 }
 
 .tag {
@@ -302,7 +304,7 @@ a {
 }
 
 #qrcode {
-  padding-top: 30px;
+  padding-top: 40px;
   padding-bottom: 20px;
   zoom: 0.8;
 }

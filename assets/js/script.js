@@ -1,47 +1,54 @@
-// Get the button element
-const button = $("#next_btn");
+// When the DOM is ready
+$(document).ready(function () {
+  var modal = $("#myModal");
+  var btn = $("#openModalBtn");
+  var closeBtn = $(".close");
 
-var s = 6;
-var timer = setInterval(() => {
-  s--;
-  button.text("Vui lòng đợi " + s + " giây...");
-  if (s == -1) {
-    clearInterval(timer);
-    $("#next_btn").removeClass("disabled-button");
-  }
-}, 1200);
+  // When the user clicks the button, open the modal
+  btn.click(function () {
+    modal.css("display", "block");
+  });
 
-// // Set the initial button text
-// button.text("Vui lòng đợi " + s + " giây...");
+  // When the user clicks on the close button, close the modal
+  closeBtn.click(function () {
+    modal.css("display", "none");
+  });
 
-// Set a 6-second timer
-setTimeout(() => {
-  // Change the button text after 6 seconds
-  button.text("Bấm vào đây để tiếp tục!");
-}, 8400);
+  // When the user clicks outside the modal, close it
+  $(window).click(function (event) {
+    if (event.target == modal[0]) {
+      modal.css("display", "none");
+    }
+  });
+});
 
-// Get the modal element
-var modal = document.getElementById("myModal");
+// Get all links with a class of "scroll-link"
+const scrollLinks = document.querySelectorAll(".scroll-link");
 
-// Get the button that opens the modal
-var btn = document.getElementById("openModalBtn");
+// Add a click event listener to each scroll link
+scrollLinks.forEach((link) => {
+  link.addEventListener("click", (event) => {
+    // Prevent the default link behavior
+    event.preventDefault();
 
-// Get the close button element
-var closeBtn = document.getElementsByClassName("close")[0];
+    // Get the ID of the target element from the link's href attribute
+    const targetId = link.getAttribute("href").substring(1);
 
-// When the user clicks the button, open the modal
-btn.onclick = function () {
-  modal.style.display = "block";
-};
+    // Get the target element by ID
+    const targetElement = document.getElementById(targetId);
 
-// When the user clicks on the close button, close the modal
-closeBtn.onclick = function () {
-  modal.style.display = "none";
-};
+    // Scroll to the target element using the scrollIntoView method
+    targetElement.scrollIntoView({
+      behavior: "smooth",
+    });
+  });
+});
 
-// When the user clicks outside the modal, close it
-window.onclick = function (event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-};
+// JavaScript to open Facebook share dialog in a popup window
+function fbShare() {
+  var shareUrl =
+    "https://www.facebook.com/sharer/sharer.php?u=" +
+    location.href +
+    "&hashtag=%23TunnaDuongLinkShortener";
+  window.open(shareUrl, "Facebook Share", "width=600,height=400");
+}
