@@ -151,7 +151,7 @@ h2:after {
 }
 
 .ads {
-  width: 666px;
+  max-width: 666px;
   min-height: 276px;
   margin-top: 10px;
 }
@@ -200,6 +200,7 @@ table tr:hover {
 .tag {
   color: white;
   max-width: 320px;
+  margin-bottom: 40px;
 }
 
 footer {

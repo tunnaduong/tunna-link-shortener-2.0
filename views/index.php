@@ -58,6 +58,9 @@
             <span class="badge">test</span>
             <span class="badge">thử nghiệm</span>
         </p>
+        <div>
+            <script data-cfasync="false" type="text/javascript" src="//brightonclick.com/a/display.php?r=7610902"></script>
+        </div>
         <footer>
             <p class="footer--copyright">
                 <span id="footer--mobile">© 2023 Duong Tung Anh<br /><span style="color: white; font-weight: 300; font-size: 15px">All rights reserved</span></span>
