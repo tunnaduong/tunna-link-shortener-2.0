@@ -15,14 +15,28 @@
     <meta name="theme-color" content="#01C483" />
     <script src="https://kit.fontawesome.com/be3d8625b2.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body onclick="">
     <center onclick>
         <h1>Link Shortener</h1>
-        <div onclick="alert('Chức năng đang hoàn thiện!')" class="btn btn-primary">Bấm vào đây để tiếp tục!</div>
-        <div onclick="alert('Chức năng đang hoàn thiện!')" class="btn">Mở trong điện thoại (QR Code)</div>
-        <div onclick="alert('Chức năng đang hoàn thiện!')" class="btn">Xem thông tin chi tiết link</div>
+        <div id="next_btn" onclick="alert('Chức năng đang hoàn thiện!')" class="btn btn-primary">Vui lòng đợi 6 giây...</div>
+        <div id="openModalBtn" onclick="modal.show()" class="btn">Mở trong điện thoại (QR Code)</div>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>Quét mã QR này bằng điện thoại của bạn</p>
+                <div class="line"></div>
+                <div id="qrcode"></div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            new QRCode(document.getElementById("qrcode"), window.location.href);
+        </script>
+        <a href="#link_info">
+            <div onclick class="btn">Xem thông tin chi tiết link</div>
+        </a>
         <h2><span><i class="fas fa-share"></i> Chia sẻ</span></h2>
         <div class="social">
             <i onclick="alert('Chức năng đang hoàn thiện!')" class="fab fa-facebook"></i>
@@ -32,7 +46,7 @@
         <div class="ads">
             <div id="awn-z7610822"></div>
         </div>
-        <h3>Thông tin liên kết</h3>
+        <h3 id="link_info">Thông tin liên kết</h3>
         <table class="table">
             <tbody>
                 <tr>
@@ -72,6 +86,7 @@
             </p>
         </footer>
     </center>
+    <script src="/assets/js/script.js"></script>
     <script data-cfasync="false" type="text/javascript">
         var adcashMacros = {};
         var zoneNativeSett = {
