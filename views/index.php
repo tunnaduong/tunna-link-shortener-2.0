@@ -20,14 +20,14 @@
 <body onclick="">
     <center onclick>
         <h1>Link Shortener</h1>
-        <div onclick="" class="btn btn-primary">Bấm vào đây để tiếp tục!</div>
-        <div onclick="" class="btn">Mở trong điện thoại (QR Code)</div>
-        <div onclick="" class="btn">Xem thông tin chi tiết link</div>
+        <div onclick="alert('Chức năng đang hoàn thiện!')" class="btn btn-primary">Bấm vào đây để tiếp tục!</div>
+        <div onclick="alert('Chức năng đang hoàn thiện!')" class="btn">Mở trong điện thoại (QR Code)</div>
+        <div onclick="alert('Chức năng đang hoàn thiện!')" class="btn">Xem thông tin chi tiết link</div>
         <h2><span><i class="fas fa-share"></i> Chia sẻ</span></h2>
         <div class="social">
-            <i onclick="" class="fab fa-facebook"></i>
-            <i onclick="" class="fab fa-twitter-square"></i>
-            <i onclick="" class="fas fa-copy"></i>
+            <i onclick="alert('Chức năng đang hoàn thiện!')" class="fab fa-facebook"></i>
+            <i onclick="alert('Chức năng đang hoàn thiện!')" class="fab fa-twitter-square"></i>
+            <i onclick="alert('Chức năng đang hoàn thiện!')" class="fas fa-copy"></i>
         </div>
         <div class="ads">
             <div id="awn-z7610822"></div>
@@ -60,8 +60,8 @@
         </p>
         <footer>
             <p class="footer--copyright">
-                <span id="footer--mobile">© 2022-2023 Duong Tung Anh<br /><span style="color: white; font-weight: 300; font-size: 15px">All rights reserved</span></span>
-                <span id="footer--desktop">© 2022-2023 Duong Tung Anh. All rights reserved.</span>
+                <span id="footer--mobile">© 2023 Duong Tung Anh<br /><span style="color: white; font-weight: 300; font-size: 15px">All rights reserved</span></span>
+                <span id="footer--desktop">© 2023 Duong Tung Anh. All rights reserved.</span>
             </p>
             <p class="footer--fun">
                 Được làm bằng 💕 <i>tình yêu</i>, 🔥 <i>nhiệt huyết</i>, ⌨️
