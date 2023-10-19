@@ -1,0 +1,65 @@
+* {
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #01906A;
+    background-image: url("/assets/images/tunnaduong_cover.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    height: 420px;
+}
+
+center {
+    position: absolute;
+    margin: 145px auto;
+    left: 0;
+    right: 0;
+}
+
+h1 {
+    font-size: 30px;
+    font-weight: 100;
+    color: white;
+    letter-spacing: 3px;
+}
+
+.btn {
+    padding: 10px; 
+}
+
+.btn-primary {
+    background-color: white;
+}
+
+@media screen and (min-width: 780px) {
+    body {
+        height: 421px;
+    }
+}
+
+@media screen and (min-width: 990px) {
+    body {
+        height: 445px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    body {
+        height: 517px;
+    }
+}
+
+@media screen and (min-width: 1570px) {
+    body {
+        height: 557px;
+    }
+}
+
+@media screen and (min-width: 1850px) {
+    body {
+        height: 600px;
+    }
+}
