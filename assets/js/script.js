@@ -5,8 +5,9 @@ var s = 6;
 var timer = setInterval(() => {
   s--;
   button.text("Vui lòng đợi " + s + " giây...");
-  if (s == 0) {
+  if (s == -1) {
     clearInterval(timer);
+    $("#next_btn").removeClass("disabled-button");
   }
 }, 1200);
 

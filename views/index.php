@@ -21,7 +21,7 @@
 <body onclick="">
     <center onclick>
         <h1>Link Shortener</h1>
-        <div id="next_btn" onclick="alert('Chức năng đang hoàn thiện!')" class="btn btn-primary">Vui lòng đợi 6 giây...</div>
+        <div id="next_btn" onclick="alert('Chức năng đang hoàn thiện!')" class="btn btn-primary disabled-button">Vui lòng đợi 6 giây...</div>
         <div id="openModalBtn" onclick="modal.show()" class="btn">Mở trong điện thoại (QR Code)</div>
         <div id="myModal" class="modal">
             <div class="modal-content">
