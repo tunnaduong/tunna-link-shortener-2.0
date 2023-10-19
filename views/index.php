@@ -17,7 +17,7 @@
     <center>
         <h1>Link Shortener</h1>
         <div class="btn btn-primary">Bấm vào đây để tiếp tục!</div>
-        <div class="btn"></div>
+        <div class="btn">Mở trong điện thoại (QR Code)</div>
     </center>
 </body>
 </html>
