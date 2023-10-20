@@ -308,3 +308,15 @@ a {
   padding-bottom: 20px;
   zoom: 0.8;
 }
+
+._404 {
+  /* img html */
+  max-width: 420px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.dude {
+  mix-blend-mode: screen;
+}
