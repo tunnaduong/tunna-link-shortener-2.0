@@ -10,13 +10,22 @@ if ($result->num_rows > 0) {
     $row = mysqli_fetch_assoc($result);
     if ($row['redirect_type'] == 0) {
         $link = $row['next_url'];
-        header('Location: ' . $link);
+        // header('Location: ' . $link);
+        // Send a JavaScript command to the browser to open a new tab with the URL
+        die("<script type='text/javascript' language='javascript'>
+        window.open('$link', '_blank');
+        setTimeout(() => {
+            location.href = 'https://shope.ee/8A4oPQUVxk';
+        }, 2000);
+        </script>");
     }
 ?>
     <!DOCTYPE html>
     <html lang="en">
 
     <head>
+
+
         <?php
         require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/head.php';
         // Get the current website URL
