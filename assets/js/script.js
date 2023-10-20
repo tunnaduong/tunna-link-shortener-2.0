@@ -52,3 +52,34 @@ function fbShare() {
     "&hashtag=%23TunnaDuongLinkShortener";
   window.open(shareUrl, "Facebook Share", "width=600,height=400");
 }
+
+function openNewWindow(url) {
+  window.open(url, "_blank");
+  setTimeout(function () {
+    window.location.href = "https://shope.ee/7zlMOzSB7w";
+  }, 3000);
+}
+
+function twitterShare() {
+  var tweetText = "Check out this awesome content!";
+  var hashtags = ["TunnaDuong", "TunnaDuongLinkShortener"]; // Add your desired hashtags here
+  var hashtagsString = hashtags.map((tag) => "#" + tag).join(" "); // Converts array to hashtag string
+  var url =
+    "https://twitter.com/intent/tweet?url=" +
+    location.href +
+    "&text=" +
+    encodeURIComponent(tweetText + " " + hashtagsString);
+  window.open(url, "Twitter Share", "width=600,height=400");
+}
+
+// JavaScript function to copy the current page URL to the clipboard
+function copyPageUrl() {
+  var url = window.location.href; // Get the current page URL
+  var tempInput = document.createElement("input");
+  tempInput.value = url;
+  document.body.appendChild(tempInput);
+  tempInput.select();
+  document.execCommand("copy");
+  document.body.removeChild(tempInput);
+  alert("Đã copy link: " + url);
+}

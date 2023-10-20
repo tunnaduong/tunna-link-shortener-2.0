@@ -8,6 +8,10 @@ $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     $row = mysqli_fetch_assoc($result);
+    if ($row['redirect_type'] == 0) {
+        $link = $row['next_url'];
+        header('Location: ' . $link);
+    }
 ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -21,7 +25,7 @@ if ($result->num_rows > 0) {
     <body onclick="">
         <center onclick>
             <h1>Link Shortener</h1>
-            <div id="next_btn" onclick="location.href='<?php echo $row['next_url'] ?>'" class="btn btn-primary disabled-button">Vui lòng đợi 6 giây...</div>
+            <div id="next_btn" onclick="openNewWindow('<?php echo $row['next_url'] ?>')" class="btn btn-primary disabled-button">Vui lòng đợi 6 giây...</div>
             <div id="openModalBtn" onclick="modal.show()" class="btn">Mở trong điện thoại (QR Code)</div>
             <div id="myModal" class="modal">
                 <div class="modal-content">
@@ -40,8 +44,8 @@ if ($result->num_rows > 0) {
             <h2><span><i class="fas fa-share"></i> Chia sẻ</span></h2>
             <div class="social">
                 <i onclick="fbShare()" class="fab fa-facebook"></i>
-                <i onclick="alert('Chức năng đang hoàn thiện!')" class="fab fa-twitter-square"></i>
-                <i onclick="alert('Chức năng đang hoàn thiện!')" class="fas fa-copy"></i>
+                <i onclick="twitterShare()" class="fab fa-twitter-square"></i>
+                <i onclick="copyPageUrl()" class="fas fa-copy"></i>
             </div>
             <div class="ads">
                 <div id="awn-z7610822"></div>
@@ -123,7 +127,7 @@ if ($result->num_rows > 0) {
             var timer = setInterval(() => {
                 s--;
                 button.text("Vui lòng đợi " + s + " giây...");
-                if (s == 0) {
+                if (s == 0 || s < 0) {
                     clearInterval(timer);
                     $("#next_btn").removeClass("disabled-button");
                 }
