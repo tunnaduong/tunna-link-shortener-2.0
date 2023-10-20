@@ -20,7 +20,7 @@ if ($result->num_rows > 0) {
         <?php
         require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/head.php';
         // Get the current website URL
-        $currentUrl = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $currentUrl = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         ?>
         <title><?php echo isset($row['link_title']) ? $row['link_title'] : "Tunna Duong Link Shortener" ?></title>
         <meta property="og:title" content="<?php echo $row['link_title'] ?>" />
