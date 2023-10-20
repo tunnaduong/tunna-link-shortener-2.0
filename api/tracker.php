@@ -46,8 +46,8 @@ function getOS()
 $operating_system = getOS();
 
 // if there is a http referer header, then set the "ref_url" variable to the value of the header else set it to "Unknown"
-if (isset($_GET['ref'])) {
-    $ref_url = $_GET['ref'];
+if (isset($data['ref'])) {
+    $ref_url = $data['ref'];
 } else {
     $ref_url = "Unknown";
 }

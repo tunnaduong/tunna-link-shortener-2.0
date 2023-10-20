@@ -249,11 +249,13 @@ if ($result->num_rows > 0) {
 
             var width = window.screen.width;
             var height = window.screen.height;
-
+            // Get the referrer URL
+            const referrer = document.referrer;
             // Define the data to be sent to the PHP script
             const data = {
                 id: "<?php echo $row['code'] ?>",
-                size: width + 'x' + height
+                size: width + 'x' + height,
+                ref: referrer
             };
 
             // Send an AJAX request to the PHP script with the data as a parameter
