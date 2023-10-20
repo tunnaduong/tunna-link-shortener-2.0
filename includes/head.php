@@ -1,6 +1,5 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tunna Duong Link Shortener</title>
 <link rel="stylesheet" href="/assets/css/style.css">
 <link rel="shortcut icon" href="/assets/images/tunnaduong.png" type="image/x-png">
 <meta name="theme-color" content="#01C483" />

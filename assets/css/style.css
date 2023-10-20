@@ -201,7 +201,7 @@ table tr:hover {
   transition: all 0.2s ease-in-out;
   color: #fff;
   background-color: #09a5be;
-  margin-right: 5px;
+  margin-right: 2px;
 }
 
 .tag {

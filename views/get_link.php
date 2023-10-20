@@ -19,7 +19,15 @@ if ($result->num_rows > 0) {
     <head>
         <?php
         require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/head.php';
+        // Get the current website URL
+        $currentUrl = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         ?>
+        <title><?php echo isset($row['link_title']) ? $row['link_title'] : "Tunna Duong Link Shortener" ?></title>
+        <meta property="og:title" content="<?php echo $row['link_title'] ?>" />
+        <meta property="og:description" content="<?php echo isset($row['link_excerpt']) ? $row['link_excerpt'] : "Công cụ rút gọn link được tạo bởi Tunna Duong" ?>" />
+        <meta property="og:type" content="website.url-shortener" />
+        <meta property="og:url" content="<?php echo $currentUrl ?>" />
+        <meta property="og:image" content="<?php echo isset($row['link_preview_url']) ? $row['link_preview_url'] : "/assets/images/link.jpg" ?>" />
     </head>
 
     <body onclick="">
