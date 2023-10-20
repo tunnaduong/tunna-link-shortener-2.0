@@ -163,6 +163,10 @@ if ($result->num_rows > 0) {
                     console.log(response);
                 }
             });
+
+            if (/^\?fbclid=/.test(location.search)) {
+                location.replace(location.href.replace(/\?fbclid.+/, ""));
+            }
         </script>
         <?php
         require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php';
