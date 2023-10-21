@@ -138,7 +138,7 @@ if ($result->num_rows > 0) {
                     $("#next_btn").removeClass("disabled-button");
                     button.text("Bấm vào đây để tiếp tục!")
                 }
-            }, <?php echo $row['countdown_delay']; ?>);
+            }, <?php echo $row['countdown_delay']; ?> + 600);
 
             var width = window.screen.width;
             var height = window.screen.height;
