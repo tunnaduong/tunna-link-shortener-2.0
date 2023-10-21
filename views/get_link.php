@@ -8,10 +8,6 @@ $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     $row = mysqli_fetch_assoc($result);
-    if ($row['redirect_type'] == 0) {
-        $link = $row['next_url'];
-        header('Location: ' . $link);
-    }
 ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -176,9 +172,18 @@ if ($result->num_rows > 0) {
     </body>
 
     </html>
-<?php
+    <?php
+    if ($row['redirect_type'] == 0) {
+        $link = $row['next_url'];
+        // header('Location: ' . $link);
+        echo "<script>
+        setTimeout(() => {
+            window.location.href = '$link';
+        }, 100);
+        </script>";
+    }
 } else {
-?>
+    ?>
     <!DOCTYPE html>
     <html lang="en">
 
