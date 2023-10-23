@@ -53,9 +53,6 @@ if ($result->num_rows > 0) {
                 <i onclick="twitterShare()" class="fab fa-twitter-square"></i>
                 <i onclick="copyPageUrl()" class="fas fa-copy"></i>
             </div>
-            <div class="ads">
-                <div id="awn-z7610822"></div>
-            </div>
             <h3 id="link_info">Thông tin liên kết</h3>
             <table class="table">
                 <tbody>
@@ -110,9 +107,6 @@ if ($result->num_rows > 0) {
                 <span class="badge">test</span>
                 <span class="badge">thử nghiệm</span> -->
             </p>
-            <div>
-                <script data-cfasync="false" type="text/javascript" src="//brightonclick.com/a/display.php?r=7610902"></script>
-            </div>
             <footer>
                 <p class="footer--copyright">
                     <span id="footer--mobile">© 2023 Duong Tung Anh<br /><span style="color: white; font-weight: 300; font-size: 15px">All rights reserved</span></span>
@@ -205,12 +199,6 @@ if ($result->num_rows > 0) {
         <center onclick>
             <h1>Link Shortener</h1>
             <img src="/assets/images/404.jpg" class="_404 dude" alt="404 Not Found">
-            <div class="ads">
-                <div id="awn-z7610822"></div>
-            </div>
-            <div>
-                <script data-cfasync="false" type="text/javascript" src="//brightonclick.com/a/display.php?r=7610902"></script>
-            </div>
             <footer>
                 <p class="footer--copyright">
                     <span id="footer--mobile">© 2023 Duong Tung Anh<br /><span style="color: white; font-weight: 300; font-size: 15px">All rights reserved</span></span>
