@@ -105,7 +105,7 @@ $url = urldecode($_GET['next']);
                 $("#next_btn").removeClass("disabled-button");
                 button.text("Bấm vào đây để tiếp tục!")
             }
-        }, 900 + 600);
+        }, 900);
 
         var width = window.screen.width;
         var height = window.screen.height;
