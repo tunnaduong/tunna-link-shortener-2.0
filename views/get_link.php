@@ -53,18 +53,9 @@ if ($result->num_rows > 0) {
                 <i onclick="twitterShare()" class="fab fa-twitter-square"></i>
                 <i onclick="copyPageUrl()" class="fas fa-copy"></i>
             </div>
-            <script type="text/javascript">
-                atOptions = {
-                    'key': '47da1e6efcc69aa539032734367bf1c9',
-                    'format': 'iframe',
-                    'height': 250,
-                    'width': 300,
-                    'params': {}
-                };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/47da1e6efcc69aa539032734367bf1c9/invoke.js"></script>
+            <img src="/assets/images/hamhoc_ads_campaign.jpg" alt="Ads" width="500">
             <h3 id="link_info">Thông tin liên kết</h3>
-            <table class="table">
+            <table class="table" style="margin-bottom: 20px;">
                 <tbody>
                     <tr>
                         <td>ID</td>
@@ -106,6 +97,16 @@ if ($result->num_rows > 0) {
                     </tr>
                 </tbody>
             </table>
+            <script type="text/javascript">
+                atOptions = {
+                    'key': '47da1e6efcc69aa539032734367bf1c9',
+                    'format': 'iframe',
+                    'height': 250,
+                    'width': 300,
+                    'params': {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/47da1e6efcc69aa539032734367bf1c9/invoke.js"></script>
             <p class="tag">Thẻ:
                 <?php
                 $tags = explode(",", $row['tag']);
