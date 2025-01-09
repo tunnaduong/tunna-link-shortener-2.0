@@ -57,7 +57,7 @@ function openNewWindow(url) {
   window.open(url, "_blank");
   setTimeout(function () {
     window.location.href =
-      "https://www.profitablecpmrate.com/igiwgtrzan?key=88571415454296bf7a418e087d3b8208";
+      "https://www.profitablecpmrate.com/dzm328ts?key=80092ec308ae7e6f888acb3560f3734d";
   }, 3000);
 }
 

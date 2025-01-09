@@ -31,7 +31,7 @@ if ($result->num_rows > 0) {
     <body onclick="">
         <center onclick>
             <h1>Link Shortener</h1>
-            <div id="next_btn" onclick="openNewWindow('<?php echo $row['next_url'] ?>')" class="btn btn-primary disabled-button">Vui lòng đợi 6 giây...</div>
+            <div id="next_btn" onclick="openNewWindow(`<?php echo $row['next_url'] ?>`)" class="btn btn-primary disabled-button">Vui lòng đợi 6 giây...</div>
             <div id="openModalBtn" onclick="modal.show()" class="btn">Mở trong điện thoại (QR Code)</div>
             <div id="myModal" class="modal">
                 <div class="modal-content">
@@ -53,7 +53,12 @@ if ($result->num_rows > 0) {
                 <i onclick="twitterShare()" class="fab fa-twitter-square"></i>
                 <i onclick="copyPageUrl()" class="fas fa-copy"></i>
             </div>
-            <img class="ads" src="/assets/images/hamhoc_ads_campaign.jpg" alt="Ads" width="500">
+            <a href="<?= $row['ads_click_url'] ?? "https://zalo.me/0707006421" ?>">
+                <img class="ads" src="<?= isset($row['ads_img_url']) ? $row['ads_img_url'] : "/assets/images/ads_for_lease.jpg" ?>" alt="Ads" width="550">
+            </a>
+            <div>
+                <sup style="color: lightgray;">Quảng cáo tài trợ bởi: <?= $row['ads_promoted_by'] ?? "tunnaAds" ?></sup>
+            </div>
             <h3 id="link_info">Thông tin liên kết</h3>
             <table class="table" style="margin-bottom: 20px;">
                 <tbody>
@@ -99,14 +104,14 @@ if ($result->num_rows > 0) {
             </table>
             <script type="text/javascript">
                 atOptions = {
-                    'key': '47da1e6efcc69aa539032734367bf1c9',
+                    'key': '2af190ba44f51f05b0f68a0224e3d5fc',
                     'format': 'iframe',
                     'height': 250,
                     'width': 300,
                     'params': {}
                 };
             </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/47da1e6efcc69aa539032734367bf1c9/invoke.js"></script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/2af190ba44f51f05b0f68a0224e3d5fc/invoke.js"></script>
             <p class="tag">Thẻ:
                 <?php
                 $tags = explode(",", $row['tag']);
@@ -118,8 +123,8 @@ if ($result->num_rows > 0) {
                 <span class="badge">test</span>
                 <span class="badge">thử nghiệm</span> -->
             </p>
-            <script async="async" data-cfasync="false" src="//pl25523254.profitablecpmrate.com/402d0c7b49ffed14238f09b33c827dda/invoke.js"></script>
-            <div id="container-402d0c7b49ffed14238f09b33c827dda" style="color: white; max-width: 600px"></div>
+            <script async="async" data-cfasync="false" src="//pl25523691.profitablecpmrate.com/e19b2044d36d5ec26b29ac25e2e560a9/invoke.js"></script>
+            <div id="container-e19b2044d36d5ec26b29ac25e2e560a9" style="color: white; max-width: 600px"></div>
             <footer>
                 <p class="footer--copyright">
                     <span id="footer--mobile">© 2023 Duong Tung Anh<br /><span style="color: white; font-weight: 300; font-size: 15px">All rights reserved</span></span>
