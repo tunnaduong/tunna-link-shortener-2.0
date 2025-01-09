@@ -53,7 +53,7 @@ if ($result->num_rows > 0) {
                 <i onclick="twitterShare()" class="fab fa-twitter-square"></i>
                 <i onclick="copyPageUrl()" class="fas fa-copy"></i>
             </div>
-            <a href="<?= $row['ads_click_url'] ?? "https://www.youtube.com/c/HAMH%E1%BB%8CC" ?>">
+            <a href="<?= $row['ads_click_url'] ?? "https://www.youtube.com/c/HAMH%E1%BB%8CC" ?>" target="_blank">
                 <img class="ads" src="<?= isset($row['ads_img_url']) ? $row['ads_img_url'] : "/assets/images/hamhoc_ads_campaign.jpg" ?>" alt="Ads" width="550">
             </a>
             <div>
