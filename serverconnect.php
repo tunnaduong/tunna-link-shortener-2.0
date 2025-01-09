@@ -1,8 +1,8 @@
 <?php
 $maychu = "103.81.85.224";
-$tendangnhap = "tunnaduong_link";
-$matkhau = "Tunganh2003";
-$tendb = "tunnaduong_link";
+$tendangnhap = "links";
+$matkhau = "tunganh2003";
+$tendb = "links";
 $db = mysqli_connect($maychu, $tendangnhap, $matkhau, $tendb);
 $servername = $maychu;
 $username = $tendangnhap;

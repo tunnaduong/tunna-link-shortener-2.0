@@ -53,6 +53,16 @@ if ($result->num_rows > 0) {
                 <i onclick="twitterShare()" class="fab fa-twitter-square"></i>
                 <i onclick="copyPageUrl()" class="fas fa-copy"></i>
             </div>
+            <script type="text/javascript">
+                atOptions = {
+                    'key': '47da1e6efcc69aa539032734367bf1c9',
+                    'format': 'iframe',
+                    'height': 250,
+                    'width': 300,
+                    'params': {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/47da1e6efcc69aa539032734367bf1c9/invoke.js"></script>
             <h3 id="link_info">Thông tin liên kết</h3>
             <table class="table">
                 <tbody>
@@ -107,6 +117,8 @@ if ($result->num_rows > 0) {
                 <span class="badge">test</span>
                 <span class="badge">thử nghiệm</span> -->
             </p>
+            <script async="async" data-cfasync="false" src="//pl25523254.profitablecpmrate.com/402d0c7b49ffed14238f09b33c827dda/invoke.js"></script>
+            <div id="container-402d0c7b49ffed14238f09b33c827dda" style="color: white; max-width: 600px"></div>
             <footer>
                 <p class="footer--copyright">
                     <span id="footer--mobile">© 2023 Duong Tung Anh<br /><span style="color: white; font-weight: 300; font-size: 15px">All rights reserved</span></span>

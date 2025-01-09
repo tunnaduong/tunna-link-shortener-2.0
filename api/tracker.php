@@ -100,7 +100,7 @@ function getUserIP()
 }
 
 $user_ip = getUserIP() == "192.168.1.103" ? "103.81.85.224" : getUserIP();
-$details = json_decode(file_get_contents("http://ip-api.com/json/{$user_ip}"));
+// $details = json_decode(file_get_contents("http://ip-api.com/json/{$user_ip}"));
 if (isset($details->city) && isset($details->country)) {
     $location = "{$details->city}, {$details->country}";
 } else {
