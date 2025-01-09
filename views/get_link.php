@@ -53,11 +53,11 @@ if ($result->num_rows > 0) {
                 <i onclick="twitterShare()" class="fab fa-twitter-square"></i>
                 <i onclick="copyPageUrl()" class="fas fa-copy"></i>
             </div>
-            <a href="<?= $row['ads_click_url'] ?? "https://zalo.me/0707006421" ?>">
-                <img class="ads" src="<?= isset($row['ads_img_url']) ? $row['ads_img_url'] : "/assets/images/ads_for_lease.jpg" ?>" alt="Ads" width="550">
+            <a href="<?= $row['ads_click_url'] ?? "https://www.youtube.com/c/HAMH%E1%BB%8CC" ?>">
+                <img class="ads" src="<?= isset($row['ads_img_url']) ? $row['ads_img_url'] : "/assets/images/hamhoc_ads_campaign.jpg" ?>" alt="Ads" width="550">
             </a>
             <div>
-                <sup style="color: lightgray;">Quảng cáo tài trợ bởi: <?= $row['ads_promoted_by'] ?? "tunnaAds" ?></sup>
+                <sup style="color: lightgray;">Quảng cáo tài trợ bởi: <?= $row['ads_promoted_by'] ?? "Ham Học Channel" ?></sup>
             </div>
             <h3 id="link_info">Thông tin liên kết</h3>
             <table class="table" style="margin-bottom: 20px;">
