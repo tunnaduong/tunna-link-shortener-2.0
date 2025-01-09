@@ -216,7 +216,7 @@ if ($result->num_rows > 0) {
     <body onclick="">
         <center onclick>
             <h1>Link Shortener</h1>
-            <img src="/assets/images/404.jpg" class="_404 dude" alt="404 Not Found">
+            <img src="/assets/images/404.png" class="_404 dude" alt="404 Not Found">
             <footer>
                 <p class="footer--copyright">
                     <span id="footer--mobile">© 2023 Duong Tung Anh<br /><span style="color: white; font-weight: 300; font-size: 15px">All rights reserved</span></span>
