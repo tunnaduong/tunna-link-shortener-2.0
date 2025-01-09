@@ -53,7 +53,7 @@ if ($result->num_rows > 0) {
                 <i onclick="twitterShare()" class="fab fa-twitter-square"></i>
                 <i onclick="copyPageUrl()" class="fas fa-copy"></i>
             </div>
-            <img src="/assets/images/hamhoc_ads_campaign.jpg" alt="Ads" width="500">
+            <img class="ads" src="/assets/images/hamhoc_ads_campaign.jpg" alt="Ads" width="500">
             <h3 id="link_info">Thông tin liên kết</h3>
             <table class="table" style="margin-bottom: 20px;">
                 <tbody>
