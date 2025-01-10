@@ -79,7 +79,7 @@ function renderAds($row)
     $promotedBy = $row['ads_promoted_by'] ?? "Ham Học Channel";
 
     return <<<HTML
-    <a href="{$adsUrl}" target="_blank">
+    <a href="{$adsUrl}">
         <img class="ads" src="{$adsImg}" alt="Ads" width="550">
     </a>
     <div>
