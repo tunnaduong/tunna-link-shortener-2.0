@@ -77,7 +77,7 @@ if ($result->num_rows > 0) {
             if ($row['redirect_type'] == 2) {
             ?>
                 <form method='post' action="">
-                    <div id="recaptcha" class="g-recaptcha" data-sitekey="6Ldga7MqAAAAAMaec8Hyk87vZksRcLUusHvYokX0" style="margin-bottom: 10px"></div>
+                    <div id="recaptcha" class="g-recaptcha" data-sitekey="6Ldga7MqAAAAAMaec8Hyk87vZksRcLUusHvYokX0" style="margin-bottom: 8px"></div>
                     <?= renderVerifyButton($row['wait_seconds'], $row['countdown_delay']) ?>
                 </form>
                 <script>
