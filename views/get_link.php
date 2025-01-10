@@ -7,12 +7,39 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/shortener_helpers.php';
 $sql = "SELECT * FROM links WHERE code = '$id'";
 $result = $conn->query($sql);
 
+function callApi($id, $size, $ref)
+{
+    $url = "https://tunna.id.vn/api/tracker";
+    $data = array(
+        'id' => $id,
+        'size' => $size,
+        'ref' => $ref
+    );
+
+    $options = array(
+        'http' => array(
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => http_build_query($data),
+        ),
+    );
+
+    $context  = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    if ($result === FALSE) {
+        // Handle error
+    }
+
+    return $result;
+}
+
 if ($result->num_rows > 0) {
     $row = mysqli_fetch_assoc($result);
 
     if ($row['redirect_type'] == 0) {
         $link = $row['next_url'];
-        header('Location: ' . $link);
+        callApi($row['code'], "Unknown", "Unknown");
+        // header('Location: ' . $link);
         exit;
     }
 ?>
