@@ -67,15 +67,63 @@ if ($result->num_rows > 0) {
                 $captcha = $_POST['g-recaptcha-response'];
                 $result_verify = recaptchaVerify($captcha) ?? false;
                 if ($result_verify) {
-                    header('Location: ' . $row['next_url']);
+                    echo renderContinueButton($row['next_url']);
+                    echo renderQRCodeSection();
+            ?>
+                    <a href="#link_info" class="scroll-link">
+                        <div class="btn">Xem thông tin chi tiết link</div>
+                    </a>
+                    <?php
+                    echo renderShareOptions();
+                    echo renderAds($row);
+                    $sql = "SELECT count(*) as total FROM tracker WHERE ref_code = '$id'";
+                    $result = $conn->query($sql);
+
+                    if ($result->num_rows > 0) {
+                        $row2 = mysqli_fetch_assoc($result);
+                        $view_count = $row2['total'];
+                    } else {
+                        $view_count = 0;
+                    }
+                    echo renderLinkInfo($row, $view_count);
+                    ?>
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key': '2af190ba44f51f05b0f68a0224e3d5fc',
+                            'format': 'iframe',
+                            'height': 250,
+                            'width': 300,
+                            'params': {}
+                        };
+                    </script>
+                    <script async="async" data-cfasync="false" type="text/javascript" src="//www.highperformanceformat.com/2af190ba44f51f05b0f68a0224e3d5fc/invoke.js"></script>
+                    <?php
+                    echo renderTags($row['tag']);
+                    ?>
+                    <script async="async" data-cfasync="false" src="//pl25523691.profitablecpmrate.com/e19b2044d36d5ec26b29ac25e2e560a9/invoke.js"></script>
+                    <div id="container-e19b2044d36d5ec26b29ac25e2e560a9" style="color: white; max-width: 600px"></div>
+                    <script>
+                        if (window.history.replaceState) {
+                            window.history.replaceState(null, null, window.location.href);
+                        }
+                    </script>
+                <?php
+                    echo renderFooter();
+                    exit();
                 } else {
-                    echo "<div class='alert-danger'>Vui lòng xác minh bạn không phải là robot!</div>";
+                    $error = "<div class='alert-danger'>Vui lòng xác minh để tiếp tục!</div>";
                 }
             }
 
             // if redirect type is 2, then it's a recaptcha-protected link
             if ($row['redirect_type'] == 2) {
-            ?>
+                ?>
+                <h4>Xác minh bạn không phải là robot để tiếp tục...</h4>
+                <?php
+                if (isset($error)) {
+                    echo $error;
+                }
+                ?>
                 <form method='post' action="">
                     <div id="recaptcha" class="g-recaptcha" data-sitekey="6Ldga7MqAAAAAMaec8Hyk87vZksRcLUusHvYokX0" style="margin-bottom: 8px"></div>
                     <?= renderVerifyButton($row['wait_seconds'], $row['countdown_delay']) ?>
@@ -144,7 +192,6 @@ if ($result->num_rows > 0) {
                         location.replace(location.href.replace(/\?fbclid.+/, ""));
                     }
                 </script>
-                <script src="/assets/js/script.js"></script>
                 <script type="text/javascript">
                     var _captchaTries = 0;
                     var onloadCallback = function() {
@@ -226,7 +273,6 @@ if ($result->num_rows > 0) {
                                 location.replace(location.href.replace(/\?fbclid.+/, ""));
                             }
                         </script>
-                        <script src="/assets/js/script.js"></script>
                     <?php
                     } else {
                     ?>
@@ -302,7 +348,6 @@ if ($result->num_rows > 0) {
                                 location.replace(location.href.replace(/\?fbclid.+/, ""));
                             }
                         </script>
-                        <script src="/assets/js/script.js"></script>
                     <?php
                     }
                 } else {
@@ -373,7 +418,6 @@ if ($result->num_rows > 0) {
                             location.replace(location.href.replace(/\?fbclid.+/, ""));
                         }
                     </script>
-                    <script src="/assets/js/script.js"></script>
                 <?php
                 }
             } else {
@@ -437,7 +481,6 @@ if ($result->num_rows > 0) {
                 location.replace(location.href.replace(/\?fbclid.+/, ""));
             }
         </script>
-        <script src="/assets/js/script.js"></script>
     <?php
             }
         } else {

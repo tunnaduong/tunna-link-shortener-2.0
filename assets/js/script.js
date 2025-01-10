@@ -20,26 +20,26 @@ $(document).ready(function () {
       modal.css("display", "none");
     }
   });
-});
 
-// Get all links with a class of "scroll-link"
-const scrollLinks = document.querySelectorAll(".scroll-link");
+  // Get all links with a class of "scroll-link"
+  const scrollLinks = document.querySelectorAll(".scroll-link");
 
-// Add a click event listener to each scroll link
-scrollLinks.forEach((link) => {
-  link.addEventListener("click", (event) => {
-    // Prevent the default link behavior
-    event.preventDefault();
+  // Add a click event listener to each scroll link
+  scrollLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      // Prevent the default link behavior
+      event.preventDefault();
 
-    // Get the ID of the target element from the link's href attribute
-    const targetId = link.getAttribute("href").substring(1);
+      // Get the ID of the target element from the link's href attribute
+      const targetId = link.getAttribute("href").substring(1);
 
-    // Get the target element by ID
-    const targetElement = document.getElementById(targetId);
+      // Get the target element by ID
+      const targetElement = document.getElementById(targetId);
 
-    // Scroll to the target element using the scrollIntoView method
-    targetElement.scrollIntoView({
-      behavior: "smooth",
+      // Scroll to the target element using the scrollIntoView method
+      targetElement.scrollIntoView({
+        behavior: "smooth",
+      });
     });
   });
 });
