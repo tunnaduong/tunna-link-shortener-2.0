@@ -116,7 +116,7 @@ function renderNextButton($nextUrl, $waitSeconds = 10, $countdownDelay = 1000)
                 clearInterval(timer);
                 button.classList.remove('disabled-button');
                 button.innerText = "Bấm vào đây để tiếp tục!";
-                button.onclick = () => window.location.href = '{$nextUrl}';
+                button.onclick = () => window.location.href = `{$nextUrl}`;
             }
         }, {$countdownDelay});
     </script>
