@@ -95,7 +95,7 @@ if ($result->num_rows > 0) {
                                 'params': {}
                             };
                         </script>
-                        <script type="text/javascript" src="//www.highperformanceformat.com/2af190ba44f51f05b0f68a0224e3d5fc/invoke.js"></script>
+                        <script async="async" data-cfasync="false" type="text/javascript" src="//www.highperformanceformat.com/2af190ba44f51f05b0f68a0224e3d5fc/invoke.js"></script>
                         <?php
                         echo renderTags($row['tag']);
                         ?>
@@ -166,7 +166,7 @@ if ($result->num_rows > 0) {
                                 'params': {}
                             };
                         </script>
-                        <script type="text/javascript" src="//www.highperformanceformat.com/2af190ba44f51f05b0f68a0224e3d5fc/invoke.js"></script>
+                        <script async="async" data-cfasync="false" type="text/javascript" src="//www.highperformanceformat.com/2af190ba44f51f05b0f68a0224e3d5fc/invoke.js"></script>
                         <?php
                         echo renderTags($row['tag']);
                         ?>
@@ -300,7 +300,7 @@ if ($result->num_rows > 0) {
                         'params': {}
                     };
                 </script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/2af190ba44f51f05b0f68a0224e3d5fc/invoke.js"></script>
+                <script async="async" data-cfasync="false" type="text/javascript" src="//www.highperformanceformat.com/2af190ba44f51f05b0f68a0224e3d5fc/invoke.js"></script>
                 <?php
                 echo renderTags($row['tag']);
                 ?>
@@ -367,7 +367,7 @@ if ($result->num_rows > 0) {
                     'params': {}
                 };
             </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/2af190ba44f51f05b0f68a0224e3d5fc/invoke.js"></script>
+            <script async="async" data-cfasync="false" type="text/javascript" src="//www.highperformanceformat.com/2af190ba44f51f05b0f68a0224e3d5fc/invoke.js"></script>
             <script async="async" data-cfasync="false" src="//pl25523691.profitablecpmrate.com/e19b2044d36d5ec26b29ac25e2e560a9/invoke.js"></script>
             <div id="container-e19b2044d36d5ec26b29ac25e2e560a9" style="color: white; max-width: 600px"></div>
             <?= renderFooter() ?>
