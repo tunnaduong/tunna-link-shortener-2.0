@@ -122,3 +122,41 @@ function renderNextButton($nextUrl, $waitSeconds = 10, $countdownDelay = 1000)
     </script>
     HTML;
 }
+
+function recaptchaVerify($recaptchaResponse)
+{
+    $secretKey = '6Ldga7MqAAAAANQwYsiNr6DJw70CvNqpsZPjLthL'; // Replace with your secret key
+    $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+    $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse . '&remoteip=' . $_SERVER['REMOTE_ADDR']);
+    $responseKeys = json_decode($response, true);
+
+    if ($responseKeys['success']) {
+        // Validation passed
+        return true;
+    } else {
+        // Validation failed
+        return false;
+    }
+}
+
+function renderVerifyButton($waitSeconds = 10, $countdownDelay = 1000)
+{
+    return <<<HTML
+    <button type="submit" id="next_btn" class="btn btn-primary disabled-button" style="min-width: 304px;">
+        Vui lòng đợi {$waitSeconds} giây...
+    </button>
+    <script type="text/javascript">
+        var remainingTime = {$waitSeconds};
+        var timer = setInterval(() => {
+            remainingTime--;
+            const button = document.getElementById('next_btn');
+            button.innerText = "Vui lòng đợi " + remainingTime + " giây...";
+            if (remainingTime <= 0) {
+                clearInterval(timer);
+                button.classList.remove('disabled-button');
+                button.innerText = "Xác minh và tiếp tục!";
+            }
+        }, {$countdownDelay});
+    </script>
+    HTML;
+}

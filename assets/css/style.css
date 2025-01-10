@@ -81,7 +81,7 @@ h1 {
   font-size: large;
   background-color: rgba(255, 255, 255, 0.53);
   margin-bottom: 10px;
-  max-width: 300px;
+  max-width: 286px;
   transition-duration: 300ms;
   font-weight: 500;
   color: black;
@@ -215,7 +215,7 @@ table tr:hover {
 
 .tag {
   color: white;
-  max-width: 320px;
+  max-width: 304px;
   margin-bottom: 40px;
 }
 
@@ -263,7 +263,7 @@ footer {
 .scroll-link {
   text-decoration: none;
   display: block;
-  max-width: 320px;
+  max-width: 304px;
 }
 
 .modal {
@@ -331,7 +331,7 @@ footer {
 }
 
 .pw {
-  min-width: 320px;
+  min-width: 304px;
 }
 
 input {
@@ -341,7 +341,7 @@ input {
   font-size: large;
   background-color: rgba(255, 255, 255, 0.53);
   margin-bottom: 10px;
-  max-width: 300px;
+  max-width: 286px;
   transition-duration: 300ms;
   font-weight: 500;
   color: black;
@@ -362,7 +362,7 @@ h4 {
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 10px;
-  max-width: 300px;
+  max-width: 286px;
   border: #721c24 solid 1px;
 }
 
