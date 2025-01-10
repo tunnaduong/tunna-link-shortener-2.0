@@ -39,7 +39,7 @@ if ($result->num_rows > 0) {
     if ($row['redirect_type'] == 0) {
         $link = $row['next_url'];
         callApi($row['code'], "Unknown", "Unknown");
-        // header('Location: ' . $link);
+        header('Location: ' . $link);
         exit;
     }
 ?>
