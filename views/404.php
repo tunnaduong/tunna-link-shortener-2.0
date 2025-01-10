@@ -18,13 +18,21 @@
 <body onclick="">
     <center onclick>
         <h1>Link Shortener</h1>
-        <img src="/assets/images/404.png" class="_404" alt="404 Not Found">
-        <div class="ads">
-            <div id="awn-z7610822"></div>
-        </div>
         <div>
-            <script data-cfasync="false" type="text/javascript" src="//brightonclick.com/a/display.php?r=7610902"></script>
+            <img src="/assets/images/404.png" class="_404" alt="404 Not Found">
         </div>
+        <script type="text/javascript">
+            atOptions = {
+                'key': '2af190ba44f51f05b0f68a0224e3d5fc',
+                'format': 'iframe',
+                'height': 250,
+                'width': 300,
+                'params': {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/2af190ba44f51f05b0f68a0224e3d5fc/invoke.js"></script>
+        <script async="async" data-cfasync="false" src="//pl25523691.profitablecpmrate.com/e19b2044d36d5ec26b29ac25e2e560a9/invoke.js"></script>
+        <div id="container-e19b2044d36d5ec26b29ac25e2e560a9" style="color: white; max-width: 600px"></div>
         <footer>
             <p class="footer--copyright">
                 <span id="footer--mobile">© 2023 Duong Tung Anh<br /><span style="color: white; font-weight: 300; font-size: 15px">All rights reserved</span></span>

@@ -8,7 +8,7 @@ require_once __DIR__ . '/router.php';
 
 get('/', 'views/index.php');
 
-get('/$id', 'views/get_link');
+any('/$id', 'views/get_link');
 
 post('/api/tracker', 'api/tracker');
 
