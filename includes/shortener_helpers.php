@@ -79,7 +79,7 @@ function renderAds($row)
     $promotedBy = $row['ads_promoted_by'] ?? "Ham Học Channel";
 
     return <<<HTML
-    <a href="{$adsUrl}">
+    <a href="{$adsUrl}" id="ads">
         <img class="ads" src="{$adsImg}" alt="Ads" width="550">
     </a>
     <div>
@@ -103,9 +103,10 @@ function renderShareOptions()
 function renderNextButton($nextUrl, $waitSeconds = 10, $countdownDelay = 1000)
 {
     return <<<HTML
-    <div id="next_btn" onclick="openNewWindow(`{$nextUrl}`)" class="btn btn-primary disabled-button">
+    <!-- onclick="openNewWindow(`{$nextUrl}`)" -->
+    <a href="#ads" id="next_btn" class="scroll-link btn btn-primary disabled-button">
         Vui lòng đợi {$waitSeconds} giây...
-    </div>
+    </a>
     <script type="text/javascript">
         var remainingTime = {$waitSeconds};
         var timer = setInterval(() => {
@@ -164,8 +165,31 @@ function renderVerifyButton($waitSeconds = 10, $countdownDelay = 1000)
 function renderContinueButton($nextUrl)
 {
     return <<<HTML
-    <div id="next_btn" onclick="openNewWindow(`{$nextUrl}`)" class="btn btn-primary">
+    <div id="next_btn2" onclick="openNewWindow(`{$nextUrl}`)" class="btn btn-primary">
         Liên kết của bạn đã sẵn sàng!
     </div>
+    HTML;
+}
+
+
+function renderVisitButton($nextUrl, $waitSeconds = 10, $countdownDelay = 1000)
+{
+    return <<<HTML
+    <div id="next_btn2" onclick="openNewWindow(`{$nextUrl}`)" style="margin-top: 10px" class="btn disabled-button btn-primary">
+        Vui lòng đợi {$waitSeconds} giây...
+    </div>
+    <script type="text/javascript">
+        var remainingTime2 = {$waitSeconds};
+        var timer2 = setInterval(() => {
+            remainingTime2--;
+            const button2 = document.getElementById('next_btn2');
+            button2.innerText = "Vui lòng đợi " + remainingTime2 + " giây...";
+            if (remainingTime2 <= 0) {
+                clearInterval(timer2);
+                button2.classList.remove('disabled-button');
+                button2.innerText = "Mở link!";
+            }
+        }, {$countdownDelay});
+    </script>
     HTML;
 }

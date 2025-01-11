@@ -280,9 +280,9 @@ if ($result->num_rows > 0) {
                         <div class='alert-danger'>Mật khẩu không chính xác!</div>
                         <form method='post' id="pw-form" action="">
                             <div class='form-group'>
-                                <input class="pw" type='password' placeholder="Nhập mật khẩu..." name='password' style="max-width: 320px;width: 100%;box-sizing: border-box;">
+                                <input class="pw" type='password' placeholder="Nhập mật khẩu..." name='password' style="max-width: 304px;width: 100%;box-sizing: border-box;">
                             </div>
-                            <button type='submit' class='btn btn-primary' style="min-width: 320px;">Xác nhận</button>
+                            <button type='submit' class='btn btn-primary' style="min-width: 304px;">Xác nhận</button>
                         </form>
                         <script>
                             if (window.history.replaceState) {
@@ -355,9 +355,9 @@ if ($result->num_rows > 0) {
                     <h4>Cần có mật khẩu để xem liên kết này</h4>
                     <form method='post' action="">
                         <div class='form-group'>
-                            <input class="pw" type='password' placeholder="Nhập mật khẩu..." name='password' style="max-width: 320px;width: 100%;box-sizing: border-box;">
+                            <input class="pw" type='password' placeholder="Nhập mật khẩu..." name='password' style="max-width: 304px;width: 100%;box-sizing: border-box;">
                         </div>
-                        <button type='submit' class='btn btn-primary' style="min-width: 320px;">Xác nhận</button>
+                        <button type='submit' class='btn btn-primary' style="min-width: 304px;">Xác nhận</button>
                     </form>
                     <?php
                     echo renderQRCodeSection();
@@ -430,6 +430,7 @@ if ($result->num_rows > 0) {
                 <?php
                 echo renderShareOptions();
                 echo renderAds($row);
+                echo renderVisitButton($row['next_url'], $row['wait_seconds'], $row['countdown_delay']);
                 $sql = "SELECT count(*) as total FROM tracker WHERE ref_code = '$id'";
                 $result = $conn->query($sql);
 

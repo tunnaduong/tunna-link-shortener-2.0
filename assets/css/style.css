@@ -64,6 +64,12 @@ h1 {
   letter-spacing: 3px;
 }
 
+.scroll-link {
+  text-decoration: none;
+  display: block;
+  max-width: 304px;
+}
+
 .btn:hover {
   background-color: rgba(100, 100, 100, 0.53);
   color: white;
@@ -258,12 +264,6 @@ footer {
   .footer--fun {
     font-size: 8px;
   }
-}
-
-.scroll-link {
-  text-decoration: none;
-  display: block;
-  max-width: 304px;
 }
 
 .modal {
