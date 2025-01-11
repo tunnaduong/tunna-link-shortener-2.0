@@ -75,8 +75,8 @@ function renderFooter()
 function renderAds($row)
 {
     $adsUrl = $row['ads_click_url'] ?? "https://www.youtube.com/c/HAMH%E1%BB%8CC";
-    $adsImg = $row['ads_img_url'] ?? "/assets/images/hamhoc_ads_campaign.jpg";
-    $promotedBy = $row['ads_promoted_by'] ?? "Ham Học Channel";
+    $adsImg = $row['ads_img_url'] ?? "/assets/images/demo.gif";
+    $promotedBy = $row['ads_promoted_by'] ?? "tunnaAds";
 
     return <<<HTML
     <a href="{$adsUrl}" id="ads">
