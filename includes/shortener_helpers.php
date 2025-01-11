@@ -165,9 +165,9 @@ function renderVerifyButton($waitSeconds = 10, $countdownDelay = 1000)
 function renderContinueButton($nextUrl)
 {
     return <<<HTML
-    <div id="next_btn2" onclick="openNewWindow(`{$nextUrl}`)" class="btn btn-primary">
+    <a href="#ads" id="next_btn" class="scroll-link btn btn-primary">
         Liên kết của bạn đã sẵn sàng!
-    </div>
+    </a>
     HTML;
 }
 
@@ -187,9 +187,18 @@ function renderVisitButton($nextUrl, $waitSeconds = 10, $countdownDelay = 1000)
             if (remainingTime2 <= 0) {
                 clearInterval(timer2);
                 button2.classList.remove('disabled-button');
-                button2.innerText = "Mở link!";
+                button2.innerText = "Mở liên kết!";
             }
         }, {$countdownDelay});
     </script>
+    HTML;
+}
+
+function renderVisitButton2($nextUrl)
+{
+    return <<<HTML
+    <div onclick="openNewWindow(`{$nextUrl}`)" style="margin-top: 10px" id="next_btn2" class="btn btn-primary">
+        Mở liên kết!
+    </div>
     HTML;
 }

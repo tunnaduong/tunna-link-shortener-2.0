@@ -76,6 +76,7 @@ if ($result->num_rows > 0) {
                     <?php
                     echo renderShareOptions();
                     echo renderAds($row);
+                    echo renderVisitButton2($row['next_url']);
                     $sql = "SELECT count(*) as total FROM tracker WHERE ref_code = '$id'";
                     $result = $conn->query($sql);
 
@@ -223,6 +224,7 @@ if ($result->num_rows > 0) {
                         <?php
                         echo renderShareOptions();
                         echo renderAds($row);
+                        echo renderVisitButton($row['next_url'], $row['wait_seconds'], $row['countdown_delay']);
                         $sql = "SELECT count(*) as total FROM tracker WHERE ref_code = '$id'";
                         $result = $conn->query($sql);
 
@@ -234,6 +236,11 @@ if ($result->num_rows > 0) {
                         }
                         echo renderLinkInfo($row, $view_count);
                         ?>
+                        <script>
+                            if (window.history.replaceState) {
+                                window.history.replaceState(null, null, window.location.href);
+                            }
+                        </script>
                         <script type="text/javascript">
                             atOptions = {
                                 'key': '2af190ba44f51f05b0f68a0224e3d5fc',
