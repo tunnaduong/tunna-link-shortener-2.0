@@ -74,7 +74,7 @@ function renderFooter()
 
 function renderAds($row)
 {
-    $adsUrl = $row['ads_click_url'] ?? "https://www.youtube.com/c/HAMH%E1%BB%8CC";
+    $adsUrl = $row['ads_click_url'] ?? "https://zalo.me/0707006421";
     $adsImg = $row['ads_img_url'] ?? "/assets/images/demo.gif";
     $promotedBy = $row['ads_promoted_by'] ?? "tunnaAds";
 
