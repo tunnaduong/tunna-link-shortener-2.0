@@ -1,7 +1,7 @@
 <?php
-$maychu = "103.81.85.224";
+$maychu = "";
 $tendangnhap = "links";
-$matkhau = "tunganh2003";
+$matkhau = "";
 $tendb = "links";
 $db = mysqli_connect($maychu, $tendangnhap, $matkhau, $tendb);
 $servername = $maychu;
@@ -19,5 +19,5 @@ mysqli_set_charset($db, 'UTF8');
 mysqli_set_charset($con, 'UTF8');
 $link = mysqli_connect($maychu, $tendangnhap, $matkhau, $tendb);
 if ($link === false) {
-    die("ERROR: Could not connect. " . mysqli_connect_error());
+  die("ERROR: Could not connect. " . mysqli_connect_error());
 }

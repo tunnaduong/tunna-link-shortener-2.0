@@ -1,0 +1,11 @@
+<?php
+$adsUrl = $link->getAdsClickUrl() ?? "https://zalo.me/0707006421";
+$adsImg = $link->getAdsImgUrl() ?? "/assets/images/demo.gif";
+$promotedBy = $link->getAdsPromotedBy() ?? "tunnaAds";
+?>
+<a href="<?= htmlspecialchars($adsUrl) ?>" id="ads">
+  <img class="ads" src="<?= htmlspecialchars($adsImg) ?>" alt="Ads" width="550">
+</a>
+<div>
+  <sup style="color: lightgray;">Quảng cáo tài trợ bởi: <?= htmlspecialchars($promotedBy) ?></sup>
+</div>

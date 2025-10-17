@@ -54,11 +54,43 @@ function fbShare() {
 }
 
 function openNewWindow(url) {
-  window.open(url, "_blank");
+  // Check if it's a javascript: URL
+  if (url.startsWith("javascript:")) {
+    // Extract the JavaScript code
+    const jsCode = url.substring(11); // Remove "javascript:" prefix
+
+    // Create a new window and execute the JavaScript
+    const newWindow = window.open("", "_blank");
+    if (newWindow) {
+      newWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>JavaScript Execution</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body>
+          <script>
+            try {
+              ${jsCode.replace(/'/g, "'")}
+            } catch (e) {
+              alert('Error executing JavaScript: ' + e.message);
+            }
+          </script>
+        </body>
+        </html>
+      `);
+      newWindow.document.close();
+    }
+  } else {
+    // For regular URLs, use the normal window.open
+    window.open(url, "_blank");
+  }
+
   setTimeout(function () {
-    window.location.href =
-      "https://www.profitablecpmrate.com/dzm328ts?key=80092ec308ae7e6f888acb3560f3734d";
-  }, 3000);
+    window.location.href = "https://shope.ee/7zlMOzSB7w";
+  }, 1000);
 }
 
 function twitterShare() {
