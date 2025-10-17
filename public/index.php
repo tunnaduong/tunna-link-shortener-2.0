@@ -3,6 +3,36 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Router\Router;
+use App\Config\AppConfig;
+use App\Utils\DebugHelper;
+
+// Load configuration
+$config = new AppConfig();
+
+// Set error reporting based on environment
+if ($config->getAppEnv() === 'local' || $config->getAppEnv() === 'development') {
+  error_reporting(E_ALL);
+  ini_set('display_errors', 1);
+  ini_set('log_errors', 1);
+  ini_set('error_log', __DIR__ . '/../logs/error.log');
+} else {
+  error_reporting(0);
+  ini_set('display_errors', 0);
+  ini_set('log_errors', 1);
+  ini_set('error_log', __DIR__ . '/../logs/error.log');
+}
+
+// Create logs directory if it doesn't exist
+$logsDir = __DIR__ . '/../logs';
+if (!is_dir($logsDir)) {
+  mkdir($logsDir, 0755, true);
+}
+
+// Initialize debug helper
+DebugHelper::init($config->getAppEnv(), $logsDir . '/debug.log');
+
+// Log request information for debugging
+DebugHelper::request();
 
 // Start output buffering
 ob_start();
@@ -55,10 +85,42 @@ try {
 } catch (Exception $e) {
   // Handle errors gracefully
   http_response_code(500);
-  if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'development') {
-    echo '<h1>Error</h1><pre>' . $e->getMessage() . '</pre>';
+
+  // Log the error
+  $errorMessage = sprintf(
+    "[%s] %s in %s on line %d\nStack trace:\n%s\nRequest URI: %s\nRequest Method: %s\nUser Agent: %s\n",
+    date('Y-m-d H:i:s'),
+    $e->getMessage(),
+    $e->getFile(),
+    $e->getLine(),
+    $e->getTraceAsString(),
+    $_SERVER['REQUEST_URI'] ?? 'N/A',
+    $_SERVER['REQUEST_METHOD'] ?? 'N/A',
+    $_SERVER['HTTP_USER_AGENT'] ?? 'N/A'
+  );
+
+  error_log($errorMessage);
+
+  // Display error based on environment
+  if ($config->getAppEnv() === 'local' || $config->getAppEnv() === 'development') {
+    echo '<h1>Debug Error Information</h1>';
+    echo '<h2>Error Details:</h2>';
+    echo '<pre>' . htmlspecialchars($e->getMessage()) . '</pre>';
+    echo '<h2>File:</h2>';
+    echo '<pre>' . htmlspecialchars($e->getFile()) . ':' . $e->getLine() . '</pre>';
+    echo '<h2>Stack Trace:</h2>';
+    echo '<pre>' . htmlspecialchars($e->getTraceAsString()) . '</pre>';
+    echo '<h2>Request Information:</h2>';
+    echo '<pre>';
+    echo 'URI: ' . htmlspecialchars($_SERVER['REQUEST_URI'] ?? 'N/A') . "\n";
+    echo 'Method: ' . htmlspecialchars($_SERVER['REQUEST_METHOD'] ?? 'N/A') . "\n";
+    echo 'User Agent: ' . htmlspecialchars($_SERVER['HTTP_USER_AGENT'] ?? 'N/A') . "\n";
+    echo 'Server: ' . htmlspecialchars($_SERVER['SERVER_NAME'] ?? 'N/A') . "\n";
+    echo 'Environment: ' . htmlspecialchars($config->getAppEnv()) . "\n";
+    echo '</pre>';
   } else {
     echo '<h1>Internal Server Error</h1>';
+    echo '<p>An error occurred while processing your request. Please try again later.</p>';
   }
 }
 
