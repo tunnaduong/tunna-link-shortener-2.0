@@ -13,9 +13,12 @@ $content = '
                 
                 <div class="form-group">
                     <label for="next_url">Destination URL *</label>
-                    <input type="url" id="next_url" name="next_url" required 
-                           placeholder="https://example.com" 
-                           value="' . htmlspecialchars($_POST['next_url'] ?? '') . '">
+                    <div class="url-input-group">
+                        <input type="url" id="next_url" name="next_url" required 
+                               placeholder="https://example.com" 
+                               value="' . htmlspecialchars($_POST['next_url'] ?? '') . '">
+                        <button type="button" id="extract-og-btn" class="btn btn-small">Extract Open Graph</button>
+                    </div>
                     <small>Enter the URL you want to shorten</small>
                 </div>
                 
@@ -245,6 +248,57 @@ document.addEventListener("DOMContentLoaded", function() {
     // Preview image click to upload
     previewImagePreview.addEventListener("click", function() {
         previewImageUploadInput.click();
+    });
+    
+    // Open Graph extraction functionality
+    document.getElementById("extract-og-btn").addEventListener("click", function() {
+        const url = document.getElementById("next_url").value;
+        if (!url) {
+            alert("Please enter a URL first");
+            return;
+        }
+        
+        const button = this;
+        const originalText = button.textContent;
+        button.textContent = "Extracting...";
+        button.disabled = true;
+        
+        fetch("/admin/extract-og", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: "url=" + encodeURIComponent(url)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Fill in the form fields with extracted data
+                if (data.data.title) {
+                    document.getElementById("link_title").value = data.data.title;
+                }
+                if (data.data.description) {
+                    document.getElementById("link_excerpt").value = data.data.description;
+                }
+                if (data.data.image) {
+                    document.getElementById("link_preview_url").value = data.data.image;
+                    // Show preview of the image
+                    const preview = document.getElementById("preview-image-preview");
+                    preview.innerHTML = `<img src="${data.data.image}" style="max-width: 100%; max-height: 200px; border-radius: 4px;">`;
+                }
+                alert("Open Graph data extracted successfully!");
+            } else {
+                alert("Failed to extract Open Graph data: " + (data.error || "Unknown error"));
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Failed to extract Open Graph data. Please try again.");
+        })
+        .finally(() => {
+            button.textContent = originalText;
+            button.disabled = false;
+        });
     });
 });
 </script>

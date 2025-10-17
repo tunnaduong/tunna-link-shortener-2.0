@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Services\LinkService;
 use App\Services\RecaptchaService;
 use App\Services\ViewRenderer;
+use App\Services\OpenGraphService;
 use App\Utils\UrlGenerator;
 
 class LinkController
@@ -13,6 +14,7 @@ class LinkController
   private RecaptchaService $recaptchaService;
   private ViewRenderer $viewRenderer;
   private UrlGenerator $urlGenerator;
+  private OpenGraphService $openGraphService;
 
   public function __construct(
     LinkService $linkService,
@@ -24,6 +26,7 @@ class LinkController
     $this->recaptchaService = $recaptchaService;
     $this->viewRenderer = $viewRenderer;
     $this->urlGenerator = $urlGenerator;
+    $this->openGraphService = new OpenGraphService();
   }
 
   public function showLink(string $code): void
@@ -47,8 +50,9 @@ class LinkController
         return;
       }
 
-      header('Location: ' . $url);
-      exit;
+      // For redirect type links, add Open Graph meta tags before redirecting
+      $this->handleRedirectWithOpenGraph($url, $result['link']);
+      return;
     }
 
     $link = $result['link'];
@@ -117,6 +121,123 @@ class LinkController
   private function handleNormalLink($link, array $data): void
   {
     $this->viewRenderer->render('link_normal', $data);
+  }
+
+  private function handleRedirectWithOpenGraph(string $url, $link): void
+  {
+    // Extract Open Graph tags from the destination URL
+    $ogTags = $this->openGraphService->extractOpenGraphTags($url);
+
+    // Use link data if available, otherwise use extracted data
+    $title = $link->getLinkTitle() ?: $ogTags['title'] ?: 'Link Shortener';
+    $description = $link->getLinkExcerpt() ?: $ogTags['description'] ?: 'Click to continue to the destination';
+    $image = $link->getLinkPreviewUrl() ?: $ogTags['image'] ?: '/assets/images/link.jpg';
+    $siteName = $ogTags['site_name'] ?: 'Tunna Link Shortener';
+
+    // Create HTML with Open Graph meta tags
+    $html = '<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>' . htmlspecialchars($title) . '</title>
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="' . htmlspecialchars($title) . '">
+    <meta property="og:description" content="' . htmlspecialchars($description) . '">
+    <meta property="og:image" content="' . htmlspecialchars($image) . '">
+    <meta property="og:url" content="' . htmlspecialchars($url) . '">
+    <meta property="og:site_name" content="' . htmlspecialchars($siteName) . '">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="' . htmlspecialchars($title) . '">
+    <meta name="twitter:description" content="' . htmlspecialchars($description) . '">
+    <meta name="twitter:image" content="' . htmlspecialchars($image) . '">
+    
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 50px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🚀 Đang chuyển hướng...</h2>
+        <div class="spinner"></div>
+        <p>Vui lòng đợi trong giây lát...</p>
+        <a href="' . htmlspecialchars($url, ENT_QUOTES) . '" target="_blank" class="btn" id="destinationBtn">
+            📱 Mở liên kết đích
+        </a>
+        <br>
+        <a href="https://shope.ee/7zlMOzSB7w" target="_blank" class="btn" style="background: #ff6b6b;">
+            🛒 Xem sản phẩm khuyến mãi
+        </a>
+    </div>
+    
+    <script>
+        // Auto-click the destination button after a short delay
+        setTimeout(function() {
+            document.getElementById(\'destinationBtn\').click();
+        }, 500);
+        
+        // Redirect to affiliate link after 3 seconds
+        setTimeout(function() {
+            window.location.href = \'https://shope.ee/7zlMOzSB7w\';
+        }, 3000);
+    </script>
+</body>
+</html>';
+
+    // Output the HTML directly
+    header('Content-Type: text/html; charset=UTF-8');
+    echo $html;
+    exit;
   }
 
   private function handleJavaScriptUrl(string $url): void

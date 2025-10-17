@@ -6,6 +6,7 @@ use App\Services\LinkService;
 use App\Services\TrackerService;
 use App\Services\ViewRenderer;
 use App\Services\FileUploadService;
+use App\Services\OpenGraphService;
 use App\Repositories\LinkRepository;
 use App\Repositories\TrackerRepository;
 use App\Database\DatabaseConnection;
@@ -18,6 +19,7 @@ class AdminController
   private TrackerService $trackerService;
   private ViewRenderer $viewRenderer;
   private FileUploadService $fileUploadService;
+  private OpenGraphService $openGraphService;
 
   public function __construct()
   {
@@ -46,6 +48,7 @@ class AdminController
     $this->linkService = new LinkService($linkRepository, $this->trackerService);
     $this->viewRenderer = new ViewRenderer();
     $this->fileUploadService = new FileUploadService();
+    $this->openGraphService = new OpenGraphService();
   }
 
   public function dashboard()
@@ -686,5 +689,37 @@ class AdminController
     }
 
     $this->viewRenderer->render('admin/edit_link', ['link' => $link]);
+  }
+
+  public function extractOpenGraph()
+  {
+    // Check authentication
+    if (!isset($_SESSION['admin_authenticated']) || !$_SESSION['admin_authenticated']) {
+      http_response_code(401);
+      echo json_encode(['error' => 'Unauthorized']);
+      return;
+    }
+
+    $url = $_POST['url'] ?? '';
+    if (empty($url)) {
+      http_response_code(400);
+      echo json_encode(['error' => 'URL is required']);
+      return;
+    }
+
+    // Validate URL
+    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+      http_response_code(400);
+      echo json_encode(['error' => 'Invalid URL']);
+      return;
+    }
+
+    try {
+      $ogTags = $this->openGraphService->extractOpenGraphTags($url);
+      echo json_encode(['success' => true, 'data' => $ogTags]);
+    } catch (\Exception $e) {
+      http_response_code(500);
+      echo json_encode(['error' => 'Failed to extract Open Graph tags: ' . $e->getMessage()]);
+    }
   }
 }

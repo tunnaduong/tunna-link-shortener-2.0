@@ -55,6 +55,7 @@ try {
   $router->post('/admin/edit-link', 'App\Controllers\AdminController@editLink');
   $router->get('/admin/analytics', 'App\Controllers\AdminController@analytics');
   $router->post('/admin/delete-link', 'App\Controllers\AdminController@deleteLink');
+  $router->post('/admin/extract-og', 'App\Controllers\AdminController@extractOpenGraph');
 
   // API routes
   $router->post('/api/tracker', 'App\Controllers\TrackerController@track');

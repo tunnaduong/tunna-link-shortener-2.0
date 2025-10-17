@@ -527,6 +527,15 @@ body {
   flex: 1;
 }
 
+.url-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.url-input-group input {
+  flex: 1;
+}
+
 /* Image Upload Styles */
 .image-upload-container {
   position: relative;
