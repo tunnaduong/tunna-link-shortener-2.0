@@ -20,7 +20,7 @@ class OpenGraphService
       $html = $this->fetchUrlContent($url);
       if (!$html) {
         // Try to provide basic info even if we can't fetch the full content
-        $tags['title'] = parse_url($url, PHP_URL_HOST) ?: 'Unknown Site';
+        $tags['title'] = parse_url($url, PHP_URL_HOST) ?: 'Tunna Link Shortener';
         $tags['description'] = 'Unable to fetch page content';
         return $tags;
       }

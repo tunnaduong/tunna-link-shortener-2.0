@@ -186,7 +186,7 @@ class LinkController
         body { 
             font-family: Arial, sans-serif; 
             text-align: center; 
-            padding: 50px; 
+            padding: 10px; 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             margin: 0;
@@ -197,7 +197,7 @@ class LinkController
         }
         .container {
             background: rgba(255,255,255,0.1);
-            padding: 30px;
+            padding: 15px;
             border-radius: 15px;
             backdrop-filter: blur(10px);
             max-width: 500px;
