@@ -4,13 +4,13 @@
  * Run this to test file upload functionality and debug issues
  */
 
-require_once __DIR__ . '../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\FileUploadService;
 use App\Utils\DebugHelper;
 
 // Initialize debug helper
-DebugHelper::init('local', __DIR__ . '../logs/debug.log');
+DebugHelper::init('local', __DIR__ . '/../logs/debug.log');
 
 echo "<h1>File Upload Test</h1>\n";
 
@@ -64,7 +64,7 @@ try {
 
   // Test 5: Check debug logs
   echo "<h2>5. Debug Information</h2>\n";
-  $debugLog = __DIR__ . '../logs/debug.log';
+  $debugLog = __DIR__ . '/../logs/debug.log';
   if (file_exists($debugLog)) {
     echo "Debug log exists: Yes<br>\n";
     echo "Debug log size: " . filesize($debugLog) . " bytes<br>\n";
