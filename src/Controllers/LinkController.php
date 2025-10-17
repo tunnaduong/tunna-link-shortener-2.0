@@ -125,7 +125,7 @@ class LinkController
 
   private function handleRedirectWithOpenGraph(string $url, $link): void
   {
-    // Extract Open Graph tags from the destination URL
+    // Extract ALL Open Graph tags from the destination URL
     $ogTags = $this->openGraphService->extractOpenGraphTags($url);
 
     // Use link data if available, otherwise use extracted data
@@ -133,6 +133,16 @@ class LinkController
     $description = $link->getLinkExcerpt() ?: $ogTags['description'] ?: 'Click to continue to the destination';
     $image = $link->getLinkPreviewUrl() ?: $ogTags['image'] ?: '/assets/images/link.jpg';
     $siteName = $ogTags['site_name'] ?: 'Tunna Link Shortener';
+
+    // Default advertisement settings
+    $defaultAdsImgUrl = '/assets/images/demo.gif';
+    $defaultAdsClickUrl = 'https://tunn.ad';
+    $defaultAdsPromotedBy = 'tunnaAds';
+
+    // Use link ad data if available, otherwise use defaults
+    $adsImgUrl = $link->getAdsImgUrl() ?: $defaultAdsImgUrl;
+    $adsClickUrl = $link->getAdsClickUrl() ?: $defaultAdsClickUrl;
+    $adsPromotedBy = $link->getAdsPromotedBy() ?: $defaultAdsPromotedBy;
 
     // Create HTML with Open Graph meta tags
     $html = '<!DOCTYPE html>
@@ -154,7 +164,23 @@ class LinkController
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="' . htmlspecialchars($title) . '">
     <meta name="twitter:description" content="' . htmlspecialchars($description) . '">
-    <meta name="twitter:image" content="' . htmlspecialchars($image) . '">
+    <meta name="twitter:image" content="' . htmlspecialchars($image) . '">';
+
+    // Add ALL extracted Open Graph tags
+    foreach ($ogTags as $key => $value) {
+      if ($value && strpos($key, 'og:') === 0) {
+        $html .= "\n    <meta property=\"" . htmlspecialchars($key) . "\" content=\"" . htmlspecialchars($value) . "\">";
+      }
+    }
+
+    // Add ALL extracted Twitter Card tags
+    foreach ($ogTags as $key => $value) {
+      if ($value && strpos($key, 'twitter:') === 0) {
+        $html .= "\n    <meta name=\"" . htmlspecialchars($key) . "\" content=\"" . htmlspecialchars($value) . "\">";
+      }
+    }
+
+    $html .= '
     
     <style>
         body { 
@@ -211,6 +237,15 @@ class LinkController
         <h2>🚀 Đang chuyển hướng...</h2>
         <div class="spinner"></div>
         <p>Vui lòng đợi trong giây lát...</p>
+        
+        <!-- Advertisement Section -->
+        <div class="ad-section" style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+            <p style="margin: 0 0 10px 0; font-size: 0.9em; opacity: 0.8;">Quảng cáo tài trợ bởi: ' . htmlspecialchars($adsPromotedBy) . '</p>
+            <a href="' . htmlspecialchars($adsClickUrl, ENT_QUOTES) . '" target="_blank" style="display: block;">
+                <img src="' . htmlspecialchars($adsImgUrl, ENT_QUOTES) . '" alt="Advertisement" style="max-width: 100%; height: auto; border-radius: 8px;">
+            </a>
+        </div>
+        
         <a href="' . htmlspecialchars($url, ENT_QUOTES) . '" target="_blank" class="btn" id="destinationBtn">
             📱 Mở liên kết đích
         </a>
@@ -221,14 +256,9 @@ class LinkController
     </div>
     
     <script>
-        // Auto-click the destination button after a short delay
+        // Redirect current page to destination after a short delay
         setTimeout(function() {
-            document.getElementById(\'destinationBtn\').click();
-        }, 500);
-        
-        // Redirect to affiliate link after 3 seconds
-        setTimeout(function() {
-            window.location.href = \'https://shope.ee/7zlMOzSB7w\';
+            window.location.href = \'' . htmlspecialchars($url, ENT_QUOTES) . '\';
         }, 3000);
     </script>
 </body>

@@ -177,9 +177,9 @@ class AdminController
         $redirectType = (int) ($_POST['redirect_type'] ?? 0);
         $waitSeconds = (int) ($_POST['wait_seconds'] ?? 10);
         $tag = $_POST['tag'] ?? '';
-        $adsImgUrl = $_POST['ads_img_url'] ?? '';
-        $adsClickUrl = $_POST['ads_click_url'] ?? '';
-        $adsPromotedBy = $_POST['ads_promoted_by'] ?? '';
+        $adsImgUrl = !empty($_POST['ads_img_url']) ? $_POST['ads_img_url'] : null;
+        $adsClickUrl = !empty($_POST['ads_click_url']) ? $_POST['ads_click_url'] : null;
+        $adsPromotedBy = !empty($_POST['ads_promoted_by']) ? $_POST['ads_promoted_by'] : null;
 
         // Handle file uploads
         try {
@@ -623,9 +623,9 @@ class AdminController
         $redirectType = (int) ($_POST['redirect_type'] ?? 0);
         $waitSeconds = (int) ($_POST['wait_seconds'] ?? 10);
         $tag = $_POST['tag'] ?? '';
-        $adsImgUrl = $_POST['ads_img_url'] ?? '';
-        $adsClickUrl = $_POST['ads_click_url'] ?? '';
-        $adsPromotedBy = $_POST['ads_promoted_by'] ?? '';
+        $adsImgUrl = !empty($_POST['ads_img_url']) ? $_POST['ads_img_url'] : null;
+        $adsClickUrl = !empty($_POST['ads_click_url']) ? $_POST['ads_click_url'] : null;
+        $adsPromotedBy = !empty($_POST['ads_promoted_by']) ? $_POST['ads_promoted_by'] : null;
 
         // Handle file uploads
         try {
@@ -693,6 +693,9 @@ class AdminController
 
   public function extractOpenGraph()
   {
+    // Set server timeout to prevent hanging
+    set_time_limit(20); // 20 second timeout
+
     // Check authentication
     if (!isset($_SESSION['admin_authenticated']) || !$_SESSION['admin_authenticated']) {
       http_response_code(401);
@@ -716,10 +719,37 @@ class AdminController
 
     try {
       $ogTags = $this->openGraphService->extractOpenGraphTags($url);
+
+      // Check if we got any meaningful data
+      $hasData = false;
+      foreach ($ogTags as $key => $value) {
+        if ($value && $key !== 'url' && strlen(trim($value)) > 0) {
+          $hasData = true;
+          break;
+        }
+      }
+
+      if (!$hasData) {
+        // Provide fallback data
+        $ogTags['title'] = parse_url($url, PHP_URL_HOST) ?: 'Website';
+        $ogTags['description'] = 'No Open Graph data found for this URL';
+        $ogTags['site_name'] = parse_url($url, PHP_URL_HOST) ?: 'Website';
+      }
+
       echo json_encode(['success' => true, 'data' => $ogTags]);
     } catch (\Exception $e) {
-      http_response_code(500);
-      echo json_encode(['error' => 'Failed to extract Open Graph tags: ' . $e->getMessage()]);
+      // Log the error for debugging
+      error_log("AdminController extractOpenGraph error: " . $e->getMessage());
+
+      // Provide fallback data even on error
+      $fallbackData = [
+        'title' => parse_url($url, PHP_URL_HOST) ?: 'Website',
+        'description' => 'Unable to extract Open Graph data',
+        'site_name' => parse_url($url, PHP_URL_HOST) ?: 'Website',
+        'url' => $url
+      ];
+
+      echo json_encode(['success' => true, 'data' => $fallbackData, 'warning' => 'Limited data extracted due to: ' . $e->getMessage()]);
     }
   }
 }

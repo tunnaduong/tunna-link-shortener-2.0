@@ -33,7 +33,7 @@ foreach ($links as $link) {
                 <tr>
                     <td><a href="/' . htmlspecialchars($link['code']) . '" target="_blank" class="url-link"><code>' . htmlspecialchars($link['code']) . '</code></a></td>
                     <td class="url-cell">
-                        <a href="' . htmlspecialchars($link['next_url']) . '" target="_blank" class="url-link" onclick="handleSpecialUrl(this, \'' . htmlspecialchars($link['next_url']) . '\')">
+                        <a href="' . htmlspecialchars($link['next_url']) . '" target="_blank" class="url-link">
                             ' . htmlspecialchars(substr($link['next_url'], 0, 40)) . (strlen($link['next_url']) > 40 ? '...' : '') . '
                         </a>
                     </td>
@@ -73,43 +73,6 @@ if ($totalPages > 1) {
 $content .= '
     </div>
 </div>
-
-<script>
-function handleSpecialUrl(element, url) {
-    // Check if it\'s a javascript: URL
-    if (url.startsWith(\'javascript:\')) {
-        // Prevent default link behavior
-        event.preventDefault();
-        
-        // Extract the JavaScript code
-        const jsCode = url.substring(11); // Remove "javascript:" prefix
-        
-        // Create a new window and execute the JavaScript
-        const newWindow = window.open(\'\', \'_blank\');
-        if (newWindow) {
-            newWindow.document.write(`
-                <html>
-                <head><title>JavaScript Execution</title></head>
-                <body>
-                    <script>
-                        try {
-                            ${jsCode}
-                        } catch (e) {
-                            alert(\'Error executing JavaScript: \' + e.message);
-                        }
-                    </script>
-                </body>
-                </html>
-            `);
-            newWindow.document.close();
-        }
-        return false;
-    }
-    
-    // For regular URLs, let the default behavior happen
-    return true;
-}
-</script>
 ';
 
 // Include the layout

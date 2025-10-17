@@ -263,15 +263,21 @@ document.addEventListener("DOMContentLoaded", function() {
         button.textContent = "Extracting...";
         button.disabled = true;
         
+        // Create AbortController for timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+        
         fetch("/admin/extract-og", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
             },
-            body: "url=" + encodeURIComponent(url)
+            body: "url=" + encodeURIComponent(url),
+            signal: controller.signal
         })
         .then(response => response.json())
         .then(data => {
+            clearTimeout(timeoutId); // Clear the timeout
             if (data.success) {
                 // Fill in the form fields with extracted data
                 if (data.data.title) {
@@ -286,20 +292,95 @@ document.addEventListener("DOMContentLoaded", function() {
                     const preview = document.getElementById("preview-image-preview");
                     preview.innerHTML = `<img src="${data.data.image}" style="max-width: 100%; max-height: 200px; border-radius: 4px;">`;
                 }
-                alert("Open Graph data extracted successfully!");
+                
+                // Display all extracted Open Graph tags
+                showExtractedTags(data.data);
+                
+                if (data.warning) {
+                    alert("Open Graph data extracted with limitations: " + data.warning);
+                } else {
+                    alert("Open Graph data extracted successfully!");
+                }
             } else {
                 alert("Failed to extract Open Graph data: " + (data.error || "Unknown error"));
             }
         })
         .catch(error => {
+            clearTimeout(timeoutId); // Clear the timeout
             console.error("Error:", error);
-            alert("Failed to extract Open Graph data. Please try again.");
+            
+            if (error.name === "AbortError") {
+                alert("Request timed out. The website may be slow or blocking requests. Please try again or enter the information manually.");
+            } else {
+                alert("Failed to extract Open Graph data. Please try again.");
+            }
         })
         .finally(() => {
             button.textContent = originalText;
             button.disabled = false;
         });
     });
+    
+    // Function to display all extracted Open Graph tags
+    function showExtractedTags(data) {
+        // Create or update the extracted tags display
+        let tagsContainer = document.getElementById("extracted-tags-container");
+        if (!tagsContainer) {
+            tagsContainer = document.createElement("div");
+            tagsContainer.id = "extracted-tags-container";
+            tagsContainer.style.cssText = "margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;";
+            
+            const form = document.querySelector("form");
+            form.insertBefore(tagsContainer, form.querySelector(".form-actions"));
+        }
+        
+        // Clear previous content
+        tagsContainer.innerHTML = "";
+        
+        // Add title
+        const title = document.createElement("h4");
+        title.textContent = "📋 Extracted Open Graph Tags";
+        title.style.cssText = "margin: 0 0 15px 0; color: #495057;";
+        tagsContainer.appendChild(title);
+        
+        // Create table to display all tags
+        const table = document.createElement("table");
+        table.style.cssText = "width: 100%; border-collapse: collapse; font-size: 14px;";
+        
+        // Add header
+        const headerRow = document.createElement("tr");
+        headerRow.style.cssText = "background: #e9ecef;";
+        headerRow.innerHTML = "<th style=\"padding: 8px; text-align: left; border: 1px solid #dee2e6;\">Tag</th><th style=\"padding: 8px; text-align: left; border: 1px solid #dee2e6;\">Value</th>";
+        table.appendChild(headerRow);
+        
+        // Add all extracted tags
+        Object.keys(data).forEach(key => {
+            if (data[key] && key !== "url") {
+                const row = document.createElement("tr");
+                row.style.cssText = "border-bottom: 1px solid #dee2e6;";
+                
+                const tagCell = document.createElement("td");
+                tagCell.style.cssText = "padding: 8px; font-weight: 500; color: #6c757d; border: 1px solid #dee2e6;";
+                tagCell.textContent = key;
+                
+                const valueCell = document.createElement("td");
+                valueCell.style.cssText = "padding: 8px; border: 1px solid #dee2e6; word-break: break-all;";
+                
+                // Handle image tags specially
+                if (key === "image" || key === "og:image") {
+                    valueCell.innerHTML = `<img src="${data[key]}" style="max-width: 200px; max-height: 100px; border-radius: 4px; display: block; margin-top: 5px;">`;
+                } else {
+                    valueCell.textContent = data[key];
+                }
+                
+                row.appendChild(tagCell);
+                row.appendChild(valueCell);
+                table.appendChild(row);
+            }
+        });
+        
+        tagsContainer.appendChild(table);
+    }
 });
 </script>
 ';
