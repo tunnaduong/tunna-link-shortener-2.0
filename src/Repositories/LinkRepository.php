@@ -20,7 +20,7 @@ class LinkRepository
   {
     try {
       $pdo = $this->dbConnection->getConnection();
-      $stmt = $pdo->prepare("SELECT * FROM links WHERE code = :code");
+      $stmt = $pdo->prepare("SELECT * FROM links WHERE BINARY code = :code");
       $stmt->bindParam(':code', $code);
       $stmt->execute();
 
@@ -101,7 +101,7 @@ class LinkRepository
                     wait_seconds = :wait_seconds, countdown_delay = :countdown_delay,
                     tag = :tag, ads_click_url = :ads_click_url, ads_img_url = :ads_img_url,
                     ads_promoted_by = :ads_promoted_by
-                WHERE code = :code
+                WHERE BINARY code = :code
             ");
 
       // Store values in variables to avoid reference issues
@@ -143,7 +143,7 @@ class LinkRepository
   {
     try {
       $pdo = $this->dbConnection->getConnection();
-      $stmt = $pdo->prepare("DELETE FROM links WHERE code = :code");
+      $stmt = $pdo->prepare("DELETE FROM links WHERE BINARY code = :code");
       $stmt->bindParam(':code', $code);
       return $stmt->execute();
     } catch (PDOException $e) {

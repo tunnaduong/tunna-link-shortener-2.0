@@ -58,7 +58,7 @@ class TrackerRepository
   {
     try {
       $pdo = $this->dbConnection->getConnection();
-      $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM tracker WHERE ref_code = :code");
+      $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM tracker WHERE BINARY ref_code = :code");
       $stmt->bindParam(':code', $code);
       $stmt->execute();
 
@@ -73,7 +73,7 @@ class TrackerRepository
   {
     try {
       $pdo = $this->dbConnection->getConnection();
-      $stmt = $pdo->prepare("SELECT * FROM tracker WHERE ref_code = :code ORDER BY created_at DESC");
+      $stmt = $pdo->prepare("SELECT * FROM tracker WHERE BINARY ref_code = :code ORDER BY created_at DESC");
       $stmt->bindParam(':code', $code);
       $stmt->execute();
 

@@ -473,7 +473,7 @@ class AdminController
 
     $stmt = $pdo->prepare("
             SELECT * FROM tracker 
-            WHERE ref_code = :code 
+            WHERE BINARY ref_code = :code 
             ORDER BY time_of_visit DESC
         ");
     $stmt->bindParam(':code', $code);
@@ -489,7 +489,7 @@ class AdminController
     $pdo = $dbConnection->getConnection();
 
     // Total visits
-    $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM tracker WHERE ref_code = :code");
+    $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM tracker WHERE BINARY ref_code = :code");
     $stmt->bindParam(':code', $code);
     $stmt->execute();
     $totalVisits = $stmt->fetch()['total'];
@@ -498,7 +498,7 @@ class AdminController
     $stmt = $pdo->prepare("
             SELECT browser, COUNT(*) as count 
             FROM tracker 
-            WHERE ref_code = :code AND browser IS NOT NULL
+            WHERE BINARY ref_code = :code AND browser IS NOT NULL
             GROUP BY browser 
             ORDER BY count DESC
         ");
@@ -510,7 +510,7 @@ class AdminController
     $stmt = $pdo->prepare("
             SELECT location, COUNT(*) as count 
             FROM tracker 
-            WHERE ref_code = :code AND location IS NOT NULL
+            WHERE BINARY ref_code = :code AND location IS NOT NULL
             GROUP BY location 
             ORDER BY count DESC
         ");
