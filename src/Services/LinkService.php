@@ -85,8 +85,7 @@ class LinkService
       ];
     }
 
-    // Track the visit
-    $this->trackerService->trackVisit($code);
+    // Tracking is now handled by JavaScript only to prevent duplicates
 
     // Handle different redirect types
     if ($link->isDirectRedirect()) {
