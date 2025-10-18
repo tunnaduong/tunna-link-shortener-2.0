@@ -21,4 +21,4 @@ jobs:
                -d '{"event": "github_push", "status": "triggered"}'
       - name: Notify via ntfy
         run: |
-          curl -d "🚀 Deploy thành công cho ${{ github.repository }}!" ntfy.sh/tunnapi-git-pulls
+          curl -d "🚀 Deploy thành công cho ${{ github.repository }}!" ntfy.sh/${{ secrets.NTFY_TOPIC }}
