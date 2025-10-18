@@ -2,28 +2,16 @@ name: Auto Deploy to aaPanel
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Trigger aaPanel Webhook
-        run: |
-          echo "🚀 Sending deploy request to aaPanel..."
-          curl -X POST "https://server.tunnaduong.com/hook?access_key=${{ secrets.AAPANEL_WEBHOOK_KEY }}"
-               
-      - name: Notify success
-        if: success()
-        run: |
-          curl -d "🚀 Deploy thành công cho ${{ github.repository }}!" ntfy.sh/tunnapi-git-pulls
-      
-      - name: Notify failure
-        if: failure()
-        run: |
-          curl -d "❌ Deploy thất bại cho ${{ github.repository }}!" ntfy.sh/tunnapi-git-pulls
+      - uses: actions/checkout@v4
+      - name: Deploy to aaPanel
+        uses: tunnaduong/aapanel-deploy-action@v1.0
+        with:
+          panel_url: https://server.tunnaduong.com
+          webhook_key: ${{ secrets.AAPANEL_WEBHOOK_KEY }}
+          ntfy_topic: tunnapi-git-pulls
