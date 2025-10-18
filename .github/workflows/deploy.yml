@@ -16,14 +16,14 @@ jobs:
       - name: Trigger aaPanel Webhook
         run: |
           echo "🚀 Sending deploy request to aaPanel..."
-          curl -X POST "${{ secrets.AAPANEL_WEBHOOK_URL }}"
+          curl -X POST "https://server.tunnaduong.com/hook?access_key=${{ secrets.AAPANEL_WEBHOOK_KEY }}"
                
       - name: Notify success
         if: success()
         run: |
-          curl -d "🚀 Deploy thành công cho ${{ github.repository }}!" ntfy.sh/${{ secrets.NTFY_TOPIC }}
+          curl -d "🚀 Deploy thành công cho ${{ github.repository }}!" ntfy.sh/tunnapi-git-pulls
       
       - name: Notify failure
         if: failure()
         run: |
-          curl -d "❌ Deploy thất bại cho ${{ github.repository }}!" ntfy.sh/${{ secrets.NTFY_TOPIC }}
+          curl -d "❌ Deploy thất bại cho ${{ github.repository }}!" ntfy.sh/tunnapi-git-pulls
