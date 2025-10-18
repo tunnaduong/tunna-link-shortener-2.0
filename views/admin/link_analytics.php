@@ -92,6 +92,38 @@ $content .= '
         </div>
         
         <div class="analytics-section">
+            <h3>Visits by Referrer</h3>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Referrer URL</th>
+                            <th>Visits</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+';
+
+foreach ($visitStats['visitsByReferrer'] as $referrer) {
+  $content .= '
+                        <tr>
+                            <td class="url-cell">
+                                <a href="' . htmlspecialchars($referrer['ref_url']) . '" target="_blank" class="url-link">
+                                    ' . htmlspecialchars(substr($referrer['ref_url'], 0, 50)) . (strlen($referrer['ref_url']) > 50 ? '...' : '') . '
+                                </a>
+                            </td>
+                            <td>' . $referrer['count'] . '</td>
+                        </tr>
+    ';
+}
+
+$content .= '
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="analytics-section">
             <h3>Recent Visits</h3>
             <div class="table-container">
                 <table class="data-table">
@@ -102,6 +134,7 @@ $content .= '
                             <th>Browser</th>
                             <th>OS</th>
                             <th>Screen Size</th>
+                            <th>Referrer</th>
                             <th>Time</th>
                         </tr>
                     </thead>
@@ -109,6 +142,15 @@ $content .= '
 ';
 
 foreach ($visits as $visit) {
+  $referrerUrl = $visit['ref_url'] ?? 'Unknown';
+  $referrerDisplay = $referrerUrl;
+  if ($referrerUrl !== 'Unknown' && $referrerUrl !== 'Direct visit' && $referrerUrl !== 'Page refreshed') {
+    $referrerDisplay = '<a href="' . htmlspecialchars($referrerUrl) . '" target="_blank" class="url-link">' .
+      htmlspecialchars(substr($referrerUrl, 0, 30)) . (strlen($referrerUrl) > 30 ? '...' : '') . '</a>';
+  } else {
+    $referrerDisplay = htmlspecialchars($referrerUrl);
+  }
+
   $content .= '
                         <tr>
                             <td>' . htmlspecialchars($visit['ip_address']) . '</td>
@@ -116,6 +158,7 @@ foreach ($visits as $visit) {
                             <td>' . htmlspecialchars($visit['browser'] ?? 'Unknown') . '</td>
                             <td>' . htmlspecialchars($visit['OS'] ?? 'Unknown') . '</td>
                             <td>' . htmlspecialchars($visit['screen_size'] ?? 'Unknown') . '</td>
+                            <td>' . $referrerDisplay . '</td>
                             <td>' . date('M j, Y H:i', strtotime($visit['time_of_visit'])) . '</td>
                         </tr>
     ';

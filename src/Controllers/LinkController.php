@@ -256,6 +256,47 @@ class LinkController
     </div>
     
     <script>
+        // Enhanced tracking for redirect pages
+        (function() {
+            try {
+                var width = window.screen.width;
+                var height = window.screen.height;
+                var referrer = document.referrer;
+                
+                // Fallback for screen size if not available
+                if (!width || !height) {
+                    width = window.innerWidth || document.documentElement.clientWidth || 0;
+                    height = window.innerHeight || document.documentElement.clientHeight || 0;
+                }
+                
+                var data = {
+                    id: "' . $link->getCode() . '",
+                    size: width + \'x\' + height,
+                    ref: referrer
+                };
+                
+                console.log(\'Redirect tracking data:\', data);
+                
+                // Send tracking data
+                fetch(\'/api/tracker\', {
+                    method: \'POST\',
+                    headers: {
+                        \'Content-Type\': \'application/x-www-form-urlencoded\',
+                    },
+                    body: new URLSearchParams(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(\'Redirect tracking success:\', data);
+                })
+                .catch(error => {
+                    console.error(\'Redirect tracking error:\', error);
+                });
+            } catch (error) {
+                console.error(\'Redirect tracking script error:\', error);
+            }
+        })();
+        
         // Redirect current page to destination after a short delay
         setTimeout(function() {
             window.location.href = \'' . htmlspecialchars($url, ENT_QUOTES) . '\';

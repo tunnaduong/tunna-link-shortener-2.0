@@ -89,6 +89,38 @@ $content .= '
         </div>
         
         <div class="analytics-section">
+            <h3>Top Referrers</h3>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Referrer URL</th>
+                            <th>Visits</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+';
+
+foreach ($overallStats['topReferrers'] as $referrer) {
+  $content .= '
+                        <tr>
+                            <td class="url-cell">
+                                <a href="' . htmlspecialchars($referrer['ref_url']) . '" target="_blank" class="url-link">
+                                    ' . htmlspecialchars(substr($referrer['ref_url'], 0, 50)) . (strlen($referrer['ref_url']) > 50 ? '...' : '') . '
+                                </a>
+                            </td>
+                            <td>' . $referrer['count'] . '</td>
+                        </tr>
+    ';
+}
+
+$content .= '
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="analytics-section">
             <h3>Top Links by Visits</h3>
             <div class="table-container">
                 <table class="data-table">

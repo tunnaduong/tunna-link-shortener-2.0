@@ -32,13 +32,24 @@ class TrackerService
     $operatingSystem = $this->userAgentParser->getOperatingSystem($userAgent);
     $location = $this->ipGeolocation->getLocation($ipAddress);
 
+    // Enhanced referrer detection
+    $referrer = $this->getEnhancedReferrer($data);
+
+    // Enhanced screen size detection
+    $screenSize = $this->getEnhancedScreenSize($data);
+
+    // Debug logging
+    error_log("Tracking Debug - Code: $code, IP: $ipAddress, UserAgent: $userAgent");
+    error_log("Tracking Debug - Browser: $browser, OS: $operatingSystem, Location: $location");
+    error_log("Tracking Debug - Screen Size: $screenSize, Referrer: $referrer");
+
     $tracker = new Tracker(
       $code,
       $ipAddress,
       null,
-      $data['ref'] ?? $this->getReferrer(),
+      $referrer,
       $location,
-      $data['size'] ?? null,
+      $screenSize,
       $browser,
       $operatingSystem,
       $userAgent
@@ -88,5 +99,60 @@ class TrackerService
     }
 
     return $_SERVER['HTTP_REFERER'] ?? "Unknown";
+  }
+
+  private function getEnhancedReferrer(array $data): string
+  {
+    // Priority: 1. Client-side data, 2. HTTP_REFERER, 3. Other sources
+    if (!empty($data['ref'])) {
+      return $data['ref'];
+    }
+
+    // Check for various referrer headers
+    $referrerHeaders = [
+      'HTTP_REFERER',
+      'HTTP_REFERRER', // Common misspelling
+      'HTTP_X_FORWARDED_FOR',
+      'HTTP_X_REAL_IP'
+    ];
+
+    foreach ($referrerHeaders as $header) {
+      if (!empty($_SERVER[$header])) {
+        return $_SERVER[$header];
+      }
+    }
+
+    // Check for cache control
+    if (isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] == 'max-age=0') {
+      return "Page refreshed";
+    }
+
+    return "Direct visit";
+  }
+
+  private function getEnhancedScreenSize(array $data): ?string
+  {
+    // Priority: 1. Client-side data, 2. Try to detect from User Agent
+    if (!empty($data['size'])) {
+      return $data['size'];
+    }
+
+    // Try to detect mobile screen sizes from User Agent
+    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+
+    // Common mobile screen sizes
+    if (preg_match('/iPhone|iPod/', $userAgent)) {
+      return '375x667'; // iPhone default
+    }
+
+    if (preg_match('/iPad/', $userAgent)) {
+      return '768x1024'; // iPad default
+    }
+
+    if (preg_match('/Android/', $userAgent)) {
+      return '360x640'; // Android default
+    }
+
+    return null; // Will be stored as 'Unknown' in database
   }
 }

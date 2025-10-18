@@ -521,10 +521,23 @@ class AdminController
     $stmt->execute();
     $visitsByLocation = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+    // Visits by referrer
+    $stmt = $pdo->prepare("
+            SELECT ref_url, COUNT(*) as count 
+            FROM tracker 
+            WHERE BINARY ref_code = :code AND ref_url IS NOT NULL AND ref_url != 'Unknown' AND ref_url != 'Direct visit'
+            GROUP BY ref_url 
+            ORDER BY count DESC
+        ");
+    $stmt->bindParam(':code', $code);
+    $stmt->execute();
+    $visitsByReferrer = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
     return [
       'totalVisits' => $totalVisits,
       'visitsByBrowser' => $visitsByBrowser,
-      'visitsByLocation' => $visitsByLocation
+      'visitsByLocation' => $visitsByLocation,
+      'visitsByReferrer' => $visitsByReferrer
     ];
   }
 
@@ -566,10 +579,22 @@ class AdminController
         ");
     $topLocations = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+    // Top referrers
+    $stmt = $pdo->query("
+            SELECT ref_url, COUNT(*) as count 
+            FROM tracker 
+            WHERE ref_url IS NOT NULL AND ref_url != 'Unknown' AND ref_url != 'Direct visit'
+            GROUP BY ref_url 
+            ORDER BY count DESC 
+            LIMIT 10
+        ");
+    $topReferrers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
     return [
       'visitsByDay' => $visitsByDay,
       'topBrowsers' => $topBrowsers,
-      'topLocations' => $topLocations
+      'topLocations' => $topLocations,
+      'topReferrers' => $topReferrers
     ];
   }
 
