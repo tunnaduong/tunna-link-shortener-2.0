@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Services\LinkService;
 use App\Services\RecaptchaService;
 use App\Services\ViewRenderer;
-use App\Services\OpenGraphService;
 use App\Utils\UrlGenerator;
 
 class LinkController
@@ -14,7 +13,6 @@ class LinkController
   private RecaptchaService $recaptchaService;
   private ViewRenderer $viewRenderer;
   private UrlGenerator $urlGenerator;
-  private OpenGraphService $openGraphService;
 
   public function __construct(
     LinkService $linkService,
@@ -26,7 +24,6 @@ class LinkController
     $this->recaptchaService = $recaptchaService;
     $this->viewRenderer = $viewRenderer;
     $this->urlGenerator = $urlGenerator;
-    $this->openGraphService = new OpenGraphService();
   }
 
   public function showLink(string $code): void
@@ -125,14 +122,11 @@ class LinkController
 
   private function handleRedirectWithOpenGraph(string $url, $link): void
   {
-    // Extract ALL Open Graph tags from the destination URL
-    $ogTags = $this->openGraphService->extractOpenGraphTags($url);
-
-    // Use link data if available, otherwise use extracted data
-    $title = $link->getLinkTitle() ?: $ogTags['title'] ?: 'Link Shortener';
-    $description = $link->getLinkExcerpt() ?: $ogTags['description'] ?: 'Click to continue to the destination';
-    $image = $link->getLinkPreviewUrl() ?: $ogTags['image'] ?: '/assets/images/link.jpg';
-    $siteName = $ogTags['site_name'] ?: 'Tunna Link Shortener';
+    // Use only link data for faster redirect - no OpenGraph extraction
+    $title = $link->getLinkTitle() ?: 'Tunna Link Shortener';
+    $description = $link->getLinkExcerpt() ?: 'Click to continue to the destination';
+    $image = $link->getLinkPreviewUrl() ?: '/assets/images/link.jpg';
+    $siteName = 'Tunna Link Shortener';
 
     // Default advertisement settings
     $defaultAdsImgUrl = '/assets/images/demo.gif';
@@ -166,19 +160,7 @@ class LinkController
     <meta name="twitter:description" content="' . htmlspecialchars($description) . '">
     <meta name="twitter:image" content="' . htmlspecialchars($image) . '">';
 
-    // Add ALL extracted Open Graph tags
-    foreach ($ogTags as $key => $value) {
-      if ($value && strpos($key, 'og:') === 0) {
-        $html .= "\n    <meta property=\"" . htmlspecialchars($key) . "\" content=\"" . htmlspecialchars($value) . "\">";
-      }
-    }
-
-    // Add ALL extracted Twitter Card tags
-    foreach ($ogTags as $key => $value) {
-      if ($value && strpos($key, 'twitter:') === 0) {
-        $html .= "\n    <meta name=\"" . htmlspecialchars($key) . "\" content=\"" . htmlspecialchars($value) . "\">";
-      }
-    }
+    // OpenGraph and Twitter Card tags are now static for faster redirect
 
     $html .= '
     
