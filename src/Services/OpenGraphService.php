@@ -83,7 +83,7 @@ class OpenGraphService
     foreach ($userAgents as $userAgent) {
       $context = stream_context_create([
         'http' => [
-          'timeout' => 8, // Reduced timeout
+          'timeout' => 6, // Reduced timeout
           'user_agent' => $userAgent,
           'follow_location' => true,
           'max_redirects' => 3, // Reduced redirects
