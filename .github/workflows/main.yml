@@ -5,6 +5,11 @@ on:
     branches: [ main ]
 
 jobs:
+  phplint:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v1
+        - uses: michaelw90/PHP-Lint@master
   deploy:
     runs-on: ubuntu-latest
     steps:
