@@ -23,10 +23,10 @@ class TrackerRepository
       $stmt = $pdo->prepare("
                 INSERT INTO tracker (
                     ref_code, ref_url, ip_address, location, screen_size, 
-                    browser, OS, browser_user_agent
+                    browser, OS, browser_user_agent, redirect_completed, redirect_completed_at
                 ) VALUES (
                     :ref_code, :ref_url, :ip_address, :location, :screen_size,
-                    :browser, :operating_system, :browser_user_agent
+                    :browser, :operating_system, :browser_user_agent, :redirect_completed, :redirect_completed_at
                 )
             ");
 
@@ -38,6 +38,8 @@ class TrackerRepository
       $browser = $tracker->getBrowser();
       $operatingSystem = $tracker->getOperatingSystem();
       $browserUserAgent = $tracker->getBrowserUserAgent();
+      $redirectCompleted = $tracker->isRedirectCompleted() ? 1 : 0;
+      $redirectCompletedAt = $tracker->getRedirectCompletedAt() ? $tracker->getRedirectCompletedAt()->format('Y-m-d H:i:s') : null;
 
       $stmt->bindParam(':ref_code', $refCode);
       $stmt->bindParam(':ref_url', $refUrl);
@@ -47,6 +49,8 @@ class TrackerRepository
       $stmt->bindParam(':browser', $browser);
       $stmt->bindParam(':operating_system', $operatingSystem);
       $stmt->bindParam(':browser_user_agent', $browserUserAgent);
+      $stmt->bindParam(':redirect_completed', $redirectCompleted);
+      $stmt->bindParam(':redirect_completed_at', $redirectCompletedAt);
 
       return $stmt->execute();
     } catch (PDOException $e) {
@@ -88,9 +92,28 @@ class TrackerRepository
     }
   }
 
+  public function markRedirectCompleted(int $trackerId): bool
+  {
+    try {
+      $pdo = $this->dbConnection->getConnection();
+      $stmt = $pdo->prepare("UPDATE tracker SET redirect_completed = 1, redirect_completed_at = NOW() WHERE id = :id");
+      $stmt->bindParam(':id', $trackerId, \PDO::PARAM_INT);
+      return $stmt->execute();
+    } catch (PDOException $e) {
+      throw new \Exception("Database error: " . $e->getMessage());
+    }
+  }
+
+  public function getConnection()
+  {
+    return $this->dbConnection->getConnection();
+  }
+
   private function mapRowToTracker(array $row): Tracker
   {
     $createdAt = isset($row['time_of_visit']) ? new \DateTime($row['time_of_visit']) : new \DateTime();
+    $redirectCompleted = isset($row['redirect_completed']) ? (bool) $row['redirect_completed'] : false;
+    $redirectCompletedAt = isset($row['redirect_completed_at']) && $row['redirect_completed_at'] ? new \DateTime($row['redirect_completed_at']) : null;
 
     return new Tracker(
       $row['ref_code'],
@@ -102,6 +125,8 @@ class TrackerRepository
       $row['browser'],
       $row['OS'],
       $row['browser_user_agent'],
+      $redirectCompleted,
+      $redirectCompletedAt,
       $createdAt
     );
   }

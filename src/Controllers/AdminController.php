@@ -497,6 +497,15 @@ class AdminController
     $stmt->execute();
     $totalVisits = $stmt->fetch()['total'];
 
+    // Completed redirects
+    $stmt = $pdo->prepare("SELECT COUNT(*) as completed FROM tracker WHERE BINARY ref_code = :code AND redirect_completed = 1");
+    $stmt->bindParam(':code', $code);
+    $stmt->execute();
+    $completedRedirects = $stmt->fetch()['completed'];
+
+    // Completion rate
+    $completionRate = $totalVisits > 0 ? round(($completedRedirects / $totalVisits) * 100, 2) : 0;
+
     // Visits by browser
     $stmt = $pdo->prepare("
             SELECT browser, COUNT(*) as count 
@@ -535,6 +544,8 @@ class AdminController
 
     return [
       'totalVisits' => $totalVisits,
+      'completedRedirects' => $completedRedirects,
+      'completionRate' => $completionRate,
       'visitsByBrowser' => $visitsByBrowser,
       'visitsByLocation' => $visitsByLocation,
       'visitsByReferrer' => $visitsByReferrer
@@ -775,6 +786,195 @@ class AdminController
       ];
 
       echo json_encode(['success' => true, 'data' => $fallbackData, 'warning' => 'Limited data extracted due to: ' . $e->getMessage()]);
+    }
+  }
+
+  public function autoShortenUrl()
+  {
+    $url = $_GET['url'] ?? '';
+    if (empty($url)) {
+      http_response_code(400);
+      echo json_encode(['error' => 'URL parameter is required']);
+      return;
+    }
+
+    // Validate URL
+    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+      http_response_code(400);
+      echo json_encode(['error' => 'Invalid URL']);
+      return;
+    }
+
+    try {
+      // Check if link already exists
+      $existingLink = $this->linkService->getLinkByNextUrl($url);
+      if ($existingLink) {
+        // Redirect to existing short link
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $redirectUrl = $protocol . '://' . $host . '/' . $existingLink->getCode();
+        header('Location: ' . $redirectUrl);
+        exit;
+      }
+
+      // Parse additional parameters
+      $redirectType = (int) ($_GET['type'] ?? 0);
+      $waitSeconds = (int) ($_GET['wait'] ?? 10);
+      $linkTitle = $_GET['title'] ?? '';
+      $linkExcerpt = $_GET['excerpt'] ?? '';
+      $linkPreviewUrl = $_GET['preview_url'] ?? '';
+      $password = $_GET['password'] ?? '';
+      $tag = $_GET['tag'] ?? '';
+      $adsImgUrl = $_GET['ads_img_url'] ?? null;
+      $adsClickUrl = $_GET['ads_click_url'] ?? null;
+      $adsPromotedBy = $_GET['ads_promoted_by'] ?? null;
+
+      // Generate random code
+      $code = $this->generateRandomCode();
+
+      // Create the link
+      $linkData = [
+        'code' => $code,
+        'next_url' => $url,
+        'link_title' => $linkTitle,
+        'link_excerpt' => $linkExcerpt,
+        'link_preview_url' => $linkPreviewUrl,
+        'password' => $password,
+        'redirect_type' => $redirectType,
+        'wait_seconds' => $waitSeconds,
+        'tag' => $tag,
+        'ads_img_url' => $adsImgUrl,
+        'ads_click_url' => $adsClickUrl,
+        'ads_promoted_by' => $adsPromotedBy
+      ];
+
+      $link = $this->linkService->createLink($linkData);
+
+      // Redirect to new short link
+      $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+      $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+      $redirectUrl = $protocol . '://' . $host . '/' . $link->getCode();
+      header('Location: ' . $redirectUrl);
+      exit;
+
+    } catch (\Exception $e) {
+      http_response_code(500);
+      echo json_encode(['error' => 'Failed to create short link: ' . $e->getMessage()]);
+    }
+  }
+
+  public function batchShortenUrls()
+  {
+    if (!$this->isAuthenticated()) {
+      $this->showLogin();
+      return;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      try {
+        $urlsText = $_POST['urls'] ?? '';
+        $defaultRedirectType = (int) ($_POST['default_redirect_type'] ?? 0);
+        $defaultWaitSeconds = (int) ($_POST['default_wait_seconds'] ?? 10);
+
+        if (empty($urlsText)) {
+          $this->viewRenderer->render('admin/error', [
+            'error' => 'URLs are required'
+          ]);
+          return;
+        }
+
+        $urls = array_filter(array_map('trim', explode("\n", $urlsText)));
+        $results = [
+          'successful' => [],
+          'duplicates' => [],
+          'errors' => []
+        ];
+
+        foreach ($urls as $index => $urlLine) {
+          if (empty($urlLine))
+            continue;
+
+          try {
+            // Parse URL line - support both simple and advanced format
+            $parts = explode('|', $urlLine);
+            $url = trim($parts[0]);
+
+            // Validate URL
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+              $results['errors'][] = [
+                'line' => $index + 1,
+                'url' => $url,
+                'error' => 'Invalid URL format'
+              ];
+              continue;
+            }
+
+            // Check if link already exists
+            $existingLink = $this->linkService->getLinkByNextUrl($url);
+            if ($existingLink) {
+              $results['duplicates'][] = [
+                'line' => $index + 1,
+                'url' => $url,
+                'code' => $existingLink->getCode(),
+                'short_url' => ($_ENV['APP_URL'] ?? 'https://tunn.ad') . '/' . $existingLink->getCode()
+              ];
+              continue;
+            }
+
+            // Parse advanced parameters if provided
+            $redirectType = isset($parts[1]) ? (int) $parts[1] : $defaultRedirectType;
+            $waitSeconds = isset($parts[2]) ? (int) $parts[2] : $defaultWaitSeconds;
+            $password = isset($parts[3]) ? trim($parts[3]) : '';
+            $tag = isset($parts[4]) ? trim($parts[4]) : '';
+
+            // Generate random code
+            $code = $this->generateRandomCode();
+
+            // Create the link
+            $linkData = [
+              'code' => $code,
+              'next_url' => $url,
+              'redirect_type' => $redirectType,
+              'wait_seconds' => $waitSeconds,
+              'password' => $password,
+              'tag' => $tag
+            ];
+
+            $link = $this->linkService->createLink($linkData);
+
+            $results['successful'][] = [
+              'line' => $index + 1,
+              'url' => $url,
+              'code' => $link->getCode(),
+              'short_url' => ($_ENV['APP_URL'] ?? 'https://tunn.ad') . '/' . $link->getCode()
+            ];
+
+          } catch (\Exception $e) {
+            $results['errors'][] = [
+              'line' => $index + 1,
+              'url' => $url,
+              'error' => $e->getMessage()
+            ];
+          }
+        }
+
+        $this->viewRenderer->render('admin/batch_shorten_success', [
+          'results' => $results,
+          'total' => count($urls),
+          'successful_count' => count($results['successful']),
+          'duplicates_count' => count($results['duplicates']),
+          'errors_count' => count($results['errors'])
+        ]);
+
+      } catch (\Exception $e) {
+        $this->viewRenderer->render('admin/error', [
+          'error' => 'Failed to process batch URLs: ' . $e->getMessage()
+        ]);
+      }
+    } else {
+      $this->viewRenderer->render('admin/error', [
+        'error' => 'Method not allowed'
+      ]);
     }
   }
 }

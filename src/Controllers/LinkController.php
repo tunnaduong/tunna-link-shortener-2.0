@@ -228,7 +228,7 @@ class LinkController
             </a>
         </div>
         
-        <a href="' . htmlspecialchars($url, ENT_QUOTES) . '" target="_blank" class="btn" id="destinationBtn">
+        <a href="' . htmlspecialchars($url, ENT_QUOTES) . '" target="_blank" class="btn" id="destinationBtn" onclick="trackRedirectCompletion()">
             📱 Mở liên kết đích
         </a>
         <br>
@@ -268,8 +268,12 @@ class LinkController
                     body: new URLSearchParams(data)
                 })
                 .then(response => response.json())
-                .then(data => {
-                    console.log(\'Redirect tracking success:\', data);
+                .then(response => {
+                    console.log(\'Redirect tracking success:\', response);
+                    // Store tracker ID for completion tracking
+                    if (response.tracker_id) {
+                        localStorage.setItem(\'tracker_id_\' + "' . $link->getCode() . '", response.tracker_id);
+                    }
                 })
                 .catch(error => {
                     console.error(\'Redirect tracking error:\', error);
@@ -278,6 +282,30 @@ class LinkController
                 console.error(\'Redirect tracking script error:\', error);
             }
         })();
+        
+        // Function to track redirect completion
+        function trackRedirectCompletion() {
+            const trackerId = localStorage.getItem(\'tracker_id_\' + "' . $link->getCode() . '");
+            if (trackerId) {
+                // Use sendBeacon for reliable tracking even if page unloads
+                if (navigator.sendBeacon) {
+                    const data = new FormData();
+                    data.append(\'tracker_id\', trackerId);
+                    navigator.sendBeacon(\'/api/tracker/complete\', data);
+                } else {
+                    // Fallback to fetch
+                    fetch(\'/api/tracker/complete\', {
+                        method: \'POST\',
+                        headers: {
+                            \'Content-Type\': \'application/x-www-form-urlencoded\',
+                        },
+                        body: \'tracker_id=\' + encodeURIComponent(trackerId)
+                    }).catch(error => {
+                        console.error(\'Completion tracking error:\', error);
+                    });
+                }
+            }
+        }
         
         // Redirect current page to destination after a short delay
         setTimeout(function() {

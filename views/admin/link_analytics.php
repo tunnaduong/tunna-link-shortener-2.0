@@ -10,7 +10,12 @@ $content = '
         <h3>Link Information</h3>
         <div class="info-grid">
             <div class="info-item">
-                <strong>Code:</strong> <code>' . htmlspecialchars($link->getCode()) . '</code>
+                <strong>Code:</strong> 
+                <code>
+                    <a href="' . ($_ENV['APP_URL'] ?? 'https://tunn.ad') . '/' . htmlspecialchars($link->getCode()) . '" target="_blank">
+                        ' . htmlspecialchars($link->getCode()) . '
+                    </a>
+                </code>
             </div>
             <div class="info-item">
                 <strong>URL:</strong> 
@@ -31,6 +36,14 @@ $content = '
         <div class="stat-card">
             <h3>Total Visits</h3>
             <div class="stat-number">' . $visitStats['totalVisits'] . '</div>
+        </div>
+        <div class="stat-card">
+            <h3>Completed Redirects</h3>
+            <div class="stat-number">' . $visitStats['completedRedirects'] . '</div>
+        </div>
+        <div class="stat-card">
+            <h3>Completion Rate</h3>
+            <div class="stat-number">' . $visitStats['completionRate'] . '%</div>
         </div>
     </div>
     

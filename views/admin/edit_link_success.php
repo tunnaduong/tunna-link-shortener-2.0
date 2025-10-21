@@ -12,7 +12,11 @@ $content = '
             <div class="info-grid">
                 <div class="info-item">
                     <strong>Short Code:</strong>
-                    <code class="link-code">' . htmlspecialchars($link->getCode()) . '</code>
+                    <code class="link-code">
+                        <a href="' . ($_ENV['APP_URL'] ?? 'https://tunn.ad') . '/' . htmlspecialchars($link->getCode()) . '" target="_blank">
+                            ' . htmlspecialchars($link->getCode()) . '
+                        </a>
+                    </code>
                 </div>
                 <div class="info-item">
                     <strong>Short URL:</strong>
@@ -81,7 +85,7 @@ $content = '
                 <div class="copy-section">
                     <label for="short-url">Short URL:</label>
                     <div class="copy-input">
-                        <input type="text" id="short-url" value="/' . htmlspecialchars($link->getCode()) . '" readonly>
+                        <input type="text" id="short-url" value="' . ($_ENV['APP_URL'] ?? 'https://tunn.ad') . '/' . htmlspecialchars($link->getCode()) . '" readonly>
                         <button onclick="copyToClipboard(\'short-url\')" class="btn btn-small">Copy</button>
                     </div>
                 </div>

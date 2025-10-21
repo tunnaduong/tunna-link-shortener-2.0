@@ -36,6 +36,26 @@ class LinkRepository
     }
   }
 
+  public function findByNextUrl(string $url): ?Link
+  {
+    try {
+      $pdo = $this->dbConnection->getConnection();
+      $stmt = $pdo->prepare("SELECT * FROM links WHERE next_url = :url LIMIT 1");
+      $stmt->bindParam(':url', $url);
+      $stmt->execute();
+
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if (!$row) {
+        return null;
+      }
+
+      return $this->mapRowToLink($row);
+    } catch (PDOException $e) {
+      throw new \Exception("Database error: " . $e->getMessage());
+    }
+  }
+
   public function create(Link $link): bool
   {
     try {

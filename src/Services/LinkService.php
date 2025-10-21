@@ -22,6 +22,11 @@ class LinkService
     return $this->linkRepository->findByCode($code);
   }
 
+  public function getLinkByNextUrl(string $url): ?Link
+  {
+    return $this->linkRepository->findByNextUrl($url);
+  }
+
   public function createLink(array $data): Link
   {
     $link = new Link(

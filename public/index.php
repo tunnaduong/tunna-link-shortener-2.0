@@ -56,9 +56,14 @@ try {
   $router->get('/admin/analytics', 'App\Controllers\AdminController@analytics');
   $router->post('/admin/delete-link', 'App\Controllers\AdminController@deleteLink');
   $router->post('/admin/extract-og', 'App\Controllers\AdminController@extractOpenGraph');
+  $router->post('/admin/batch-shorten', 'App\Controllers\AdminController@batchShortenUrls');
+
+  // Auto-shorten route
+  $router->get('/shorten', 'App\Controllers\AdminController@autoShortenUrl');
 
   // API routes
   $router->post('/api/tracker', 'App\Controllers\TrackerController@track');
+  $router->post('/api/tracker/complete', 'App\Controllers\TrackerController@trackCompletion');
   $router->get('/api/redirect', function () {
     $url = urldecode($_GET['next'] ?? '');
     if ($url) {

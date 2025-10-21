@@ -13,6 +13,8 @@ class Tracker
   private ?string $browser;
   private ?string $operatingSystem;
   private ?string $browserUserAgent;
+  private bool $redirectCompleted;
+  private ?\DateTime $redirectCompletedAt;
   private \DateTime $createdAt;
 
   public function __construct(
@@ -25,6 +27,8 @@ class Tracker
     ?string $browser = null,
     ?string $operatingSystem = null,
     ?string $browserUserAgent = null,
+    bool $redirectCompleted = false,
+    ?\DateTime $redirectCompletedAt = null,
     ?\DateTime $createdAt = null
   ) {
     $this->id = $id;
@@ -36,6 +40,8 @@ class Tracker
     $this->browser = $browser;
     $this->operatingSystem = $operatingSystem;
     $this->browserUserAgent = $browserUserAgent;
+    $this->redirectCompleted = $redirectCompleted;
+    $this->redirectCompletedAt = $redirectCompletedAt;
     $this->createdAt = $createdAt ?? new \DateTime();
   }
 
@@ -88,5 +94,21 @@ class Tracker
   public function getCreatedAt(): \DateTime
   {
     return $this->createdAt;
+  }
+
+  public function isRedirectCompleted(): bool
+  {
+    return $this->redirectCompleted;
+  }
+
+  public function getRedirectCompletedAt(): ?\DateTime
+  {
+    return $this->redirectCompletedAt;
+  }
+
+  public function markRedirectCompleted(): void
+  {
+    $this->redirectCompleted = true;
+    $this->redirectCompletedAt = new \DateTime();
   }
 }

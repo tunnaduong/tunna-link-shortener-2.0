@@ -6,8 +6,16 @@ $content = '
         <a href="/admin/links" class="btn btn-secondary">Back to Links</a>
     </div>
     
-    <div class="create-link-form-container">
-        <form method="POST" action="/admin/create-link" class="create-link-form" enctype="multipart/form-data">
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+        <button class="tab-btn active" onclick="switchTab(\'manual\')">Manual</button>
+        <button class="tab-btn" onclick="switchTab(\'batch\')">Batch</button>
+    </div>
+    
+    <!-- Manual Tab -->
+    <div id="manual-tab" class="tab-content active">
+        <div class="create-link-form-container">
+            <form method="POST" action="/admin/create-link" class="create-link-form" enctype="multipart/form-data">
             <div class="form-section">
                 <h3>Basic Information</h3>
                 
@@ -134,10 +142,80 @@ $content = '
                 <a href="/admin/links" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
+        </div>
+    </div>
+    
+    <!-- Batch Tab -->
+    <div id="batch-tab" class="tab-content">
+        <div class="batch-shorten-container">
+            <h3>Batch URL Shortening</h3>
+            <p>Enter URLs to shorten, one per line. You can use simple URLs or the advanced format with pipe separators.</p>
+            
+            <div class="batch-format-info">
+                <h4>Supported Formats:</h4>
+                <ul>
+                    <li><strong>Simple:</strong> <code>https://example.com</code></li>
+                    <li><strong>Advanced:</strong> <code>https://example.com|type|wait|password|tag</code></li>
+                </ul>
+                <p><strong>Parameters:</strong> type (0=direct, 1=click, 2=captcha, 3=password), wait (seconds), password, tag</p>
+            </div>
+            
+            <form id="batch-form" method="POST" action="/admin/batch-shorten">
+                <div class="form-group">
+                    <label for="batch_urls">URLs to Shorten</label>
+                    <textarea id="batch_urls" name="urls" rows="10" placeholder="https://example.com&#10;https://another-site.com|1|5|mypassword|marketing&#10;https://third-site.com"></textarea>
+                    <small>Enter one URL per line. Use the advanced format for custom settings.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="default_redirect_type">Default Redirect Type</label>
+                    <select id="default_redirect_type" name="default_redirect_type">
+                        <option value="0">Direct Redirect</option>
+                        <option value="1">Click Through</option>
+                        <option value="2">reCAPTCHA Protected</option>
+                        <option value="3">Password Protected</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="default_wait_seconds">Default Wait Time (seconds)</label>
+                    <input type="number" id="default_wait_seconds" name="default_wait_seconds" min="0" max="60" value="10">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn">Shorten All URLs</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearBatchForm()">Clear</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <script>
+// Tab switching functionality
+function switchTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab content
+    document.getElementById(tabName + '-tab').classList.add('active');
+    
+    // Add active class to clicked button
+    event.target.classList.add('active');
+}
+
+// Clear batch form
+function clearBatchForm() {
+    document.getElementById('batch_urls').value = '';
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     // Show/hide password field based on redirect type
     const redirectType = document.getElementById("redirect_type");
@@ -248,6 +326,22 @@ document.addEventListener("DOMContentLoaded", function() {
     // Preview image click to upload
     previewImagePreview.addEventListener("click", function() {
         previewImageUploadInput.click();
+    });
+    
+    // Auto-extract OpenGraph on paste
+    document.getElementById("next_url").addEventListener("paste", function(e) {
+        setTimeout(() => {
+            if (this.value && this.value.trim()) {
+                // Show loading indicator
+                const button = document.getElementById("extract-og-btn");
+                const originalText = button.textContent;
+                button.textContent = "Auto-extracting...";
+                button.disabled = true;
+                
+                // Trigger extraction
+                document.getElementById("extract-og-btn").click();
+            }
+        }, 100);
     });
     
     // Open Graph extraction functionality

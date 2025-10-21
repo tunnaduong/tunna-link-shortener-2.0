@@ -23,7 +23,7 @@ class TrackerService
     $this->ipGeolocation = $ipGeolocation;
   }
 
-  public function trackVisit(string $code, array $data = []): bool
+  public function trackVisit(string $code, array $data = []): ?int
   {
     $ipAddress = $this->getClientIp();
     $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
@@ -55,7 +55,13 @@ class TrackerService
       $userAgent
     );
 
-    return $this->trackerRepository->create($tracker);
+    $success = $this->trackerRepository->create($tracker);
+    if ($success) {
+      // Get the last inserted ID
+      $pdo = $this->trackerRepository->getConnection();
+      return (int) $pdo->lastInsertId();
+    }
+    return null;
   }
 
   public function getVisitCountByCode(string $code): int
@@ -66,6 +72,11 @@ class TrackerService
   public function getVisitsByCode(string $code): array
   {
     return $this->trackerRepository->findByCode($code);
+  }
+
+  public function trackRedirectCompletion(int $trackerId): bool
+  {
+    return $this->trackerRepository->markRedirectCompleted($trackerId);
   }
 
   private function getClientIp(): string
