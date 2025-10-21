@@ -22,6 +22,10 @@ class OpenGraphService
         // Try to provide basic info even if we can't fetch the full content
         $tags['title'] = parse_url($url, PHP_URL_HOST) ?: 'Tunna Link Shortener';
         $tags['description'] = 'Tunna Link Shortener - Dự án cá nhân rút gọn link với thống kê và bảo mật. Phát triển bởi Tunna Duong.';
+        $tags['image'] = '/assets/images/link.jpg';
+        $tags['site_name'] = 'Tunna Link Shortener';
+        $tags['type'] = 'website';
+        $tags['url'] = $url;
         return $tags;
       }
 
