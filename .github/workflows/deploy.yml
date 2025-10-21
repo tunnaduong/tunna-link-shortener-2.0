@@ -1,0 +1,17 @@
+name: Auto Deploy to aaPanel
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to aaPanel
+        uses: tunnaduong/aapanel-deploy-action@v1.0
+        with:
+          panel_url: https://server.tunnaduong.com
+          webhook_key: ${{ secrets.AAPANEL_WEBHOOK_KEY }}
+          ntfy_topic: tunnapi-git-pulls

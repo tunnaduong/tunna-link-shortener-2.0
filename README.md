@@ -1,4 +1,4 @@
-# Tunna Link Shortener 2.0
+# Tunna Link Shortener 3.0
 
 A clean architecture refactoring of the original link shortener application.
 
