@@ -21,7 +21,7 @@ class OpenGraphService
       if (!$html) {
         // Try to provide basic info even if we can't fetch the full content
         $tags['title'] = parse_url($url, PHP_URL_HOST) ?: 'Tunna Link Shortener';
-        $tags['description'] = 'Unable to fetch page content';
+        $tags['description'] = 'Tunna Link Shortener - Dự án cá nhân rút gọn link với thống kê và bảo mật. Phát triển bởi Tunna Duong.';
         return $tags;
       }
 
