@@ -18,6 +18,7 @@
           <a href="/admin" class="nav-link">Dashboard</a>
           <a href="/admin/links" class="nav-link">Links</a>
           <a href="/admin/analytics" class="nav-link">Analytics</a>
+          <a href="/admin/map-analytics" class="nav-link">Location Map</a>
           <a href="/admin/logout" class="nav-link logout">Logout</a>
         </nav>
       </div>

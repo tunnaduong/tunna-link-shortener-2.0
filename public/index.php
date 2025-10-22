@@ -54,6 +54,7 @@ try {
   $router->get('/admin/edit-link', 'App\Controllers\AdminController@editLink');
   $router->post('/admin/edit-link', 'App\Controllers\AdminController@editLink');
   $router->get('/admin/analytics', 'App\Controllers\AdminController@analytics');
+  $router->get('/admin/map-analytics', 'App\Controllers\AdminController@mapAnalytics');
   $router->post('/admin/delete-link', 'App\Controllers\AdminController@deleteLink');
   $router->post('/admin/extract-og', 'App\Controllers\AdminController@extractOpenGraph');
   $router->post('/admin/batch-shorten', 'App\Controllers\AdminController@batchShortenUrls');

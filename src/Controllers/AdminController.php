@@ -1002,10 +1002,16 @@ class AdminController
             $linkData = [
               'code' => $code,
               'next_url' => $url,
+              'link_title' => '', // Default empty title for batch processing
+              'link_excerpt' => '', // Default empty excerpt
+              'link_preview_url' => '', // Default empty preview URL
               'redirect_type' => $redirectType,
               'wait_seconds' => $waitSeconds,
               'password' => $password,
-              'tag' => $tag
+              'tag' => $tag,
+              'ads_img_url' => '', // Default empty ads image URL
+              'ads_click_url' => '', // Default empty ads click URL
+              'ads_promoted_by' => '' // Default empty ads promoted by
             ];
 
             $link = $this->linkService->createLink($linkData);
@@ -1106,6 +1112,122 @@ class AdminController
       return ['direction' => 'down', 'percentage' => $percentage, 'class' => 'trend-down'];
     } else {
       return ['direction' => 'neutral', 'percentage' => 0, 'class' => 'trend-neutral'];
+    }
+  }
+
+  public function mapAnalytics()
+  {
+    if (!$this->isAuthenticated()) {
+      $this->showLogin();
+      return;
+    }
+
+    try {
+      // Get location data for map visualization
+      $locationData = $this->getLocationDataForMap();
+
+      $this->viewRenderer->render('admin/map_analytics', [
+        'locationData' => $locationData
+      ]);
+    } catch (\Exception $e) {
+      $this->viewRenderer->render('admin/error', [
+        'error' => 'Failed to load map analytics: ' . $e->getMessage()
+      ]);
+    }
+  }
+
+  private function getLocationDataForMap()
+  {
+    try {
+      $dbConfig = new DatabaseConfig();
+      $dbConnection = DatabaseConnection::getInstance($dbConfig);
+      $pdo = $dbConnection->getConnection();
+
+      // Get all unique locations with visit counts
+      $sql = "SELECT 
+                location, 
+                COUNT(*) as visit_count,
+                GROUP_CONCAT(DISTINCT ip_address) as ip_addresses,
+                MIN(created_at) as first_visit,
+                MAX(created_at) as last_visit
+              FROM tracker 
+              WHERE location IS NOT NULL 
+                AND location != 'Unknown' 
+                AND location != ''
+              GROUP BY location 
+              ORDER BY visit_count DESC";
+
+      $stmt = $pdo->query($sql);
+      $locations = [];
+
+      while ($row = $stmt->fetch()) {
+        // Parse location to get coordinates if possible
+        $coordinates = $this->getCoordinatesFromLocation($row['location']);
+
+        $locations[] = [
+          'location' => $row['location'],
+          'visit_count' => (int) $row['visit_count'],
+          'ip_addresses' => explode(',', $row['ip_addresses']),
+          'first_visit' => $row['first_visit'],
+          'last_visit' => $row['last_visit'],
+          'coordinates' => $coordinates
+        ];
+      }
+
+      return $locations;
+    } catch (\Exception $e) {
+      error_log("Error getting location data: " . $e->getMessage());
+      return [];
+    }
+  }
+
+  private function getCoordinatesFromLocation($location)
+  {
+    // Try to get coordinates from location string
+    // This is a simplified approach - in production, you might want to use a proper geocoding service
+    try {
+      // For now, we'll use a simple approach with ip-api.com for coordinates
+      // In a real implementation, you'd want to cache these results
+      $ipAddresses = $this->getIpAddressesForLocation($location);
+
+      if (!empty($ipAddresses)) {
+        $firstIp = $ipAddresses[0];
+        $details = json_decode(file_get_contents("http://ip-api.com/json/{$firstIp}"));
+
+        if (isset($details->lat) && isset($details->lon)) {
+          return [
+            'lat' => (float) $details->lat,
+            'lng' => (float) $details->lon
+          ];
+        }
+      }
+    } catch (\Exception $e) {
+      error_log("Error getting coordinates for location {$location}: " . $e->getMessage());
+    }
+
+    return null;
+  }
+
+  private function getIpAddressesForLocation($location)
+  {
+    try {
+      $dbConfig = new DatabaseConfig();
+      $dbConnection = DatabaseConnection::getInstance($dbConfig);
+      $pdo = $dbConnection->getConnection();
+
+      $sql = "SELECT DISTINCT ip_address FROM tracker WHERE location = ? LIMIT 1";
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute([$location]);
+
+      $ipAddresses = [];
+      while ($row = $stmt->fetch()) {
+        $ipAddresses[] = $row['ip_address'];
+      }
+
+      return $ipAddresses;
+    } catch (\Exception $e) {
+      error_log("Error getting IP addresses for location: " . $e->getMessage());
+      return [];
     }
   }
 }

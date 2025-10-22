@@ -144,20 +144,62 @@ $pageTitle = 'Batch URL Shortening Results';
 
 <script>
   function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function () {
-      // Show feedback
-      const button = event.target;
-      const originalText = button.textContent;
-      button.textContent = "Copied!";
-      button.style.backgroundColor = "#28a745";
+    // Try modern clipboard API first
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () {
+        // Show feedback
+        const button = event.target;
+        const originalText = button.textContent;
+        button.textContent = "Copied!";
+        button.style.backgroundColor = "#28a745";
 
-      setTimeout(() => {
-        button.textContent = originalText;
-        button.style.backgroundColor = "";
-      }, 2000);
-    }).catch(function (err) {
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.backgroundColor = "";
+        }, 2000);
+      }).catch(function (err) {
+        console.error('Clipboard API failed:', err);
+        fallbackCopy(text);
+      });
+    } else {
+      // Fallback for older browsers or non-secure contexts
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text) {
+    // Create a temporary textarea element
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        // Show feedback
+        const button = event.target;
+        const originalText = button.textContent;
+        button.textContent = "Copied!";
+        button.style.backgroundColor = "#28a745";
+
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.backgroundColor = "";
+        }, 2000);
+      } else {
+        alert("Failed to copy. Please select and copy manually.");
+      }
+    } catch (err) {
+      console.error('Fallback copy failed:', err);
       alert("Failed to copy. Please select and copy manually.");
-    });
+    } finally {
+      document.body.removeChild(textArea);
+    }
   }
 </script>
 
