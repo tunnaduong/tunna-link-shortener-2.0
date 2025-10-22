@@ -392,11 +392,79 @@ class AdminController
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM tracker WHERE DATE(time_of_visit) = CURDATE()");
     $visitsToday = $stmt->fetch()['total'];
 
+    // Average visits in last 7 days (excluding today)
+    $stmt = $pdo->query("SELECT AVG(daily_visits) as avg_visits FROM (
+        SELECT DATE(time_of_visit) as visit_date, COUNT(*) as daily_visits 
+        FROM tracker 
+        WHERE time_of_visit >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) 
+        AND time_of_visit < CURDATE()
+        GROUP BY DATE(time_of_visit)
+    ) as daily_stats");
+    $avgVisitsLast7Days = round($stmt->fetch()['avg_visits'] ?? 0);
+
+    // Average redirects completed in last 7 days (excluding today)
+    $stmt = $pdo->query("SELECT AVG(daily_completed) as avg_completed FROM (
+        SELECT DATE(time_of_visit) as visit_date, COUNT(*) as daily_completed 
+        FROM tracker 
+        WHERE redirect_completed = 1 
+        AND time_of_visit >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) 
+        AND time_of_visit < CURDATE()
+        GROUP BY DATE(time_of_visit)
+    ) as daily_stats");
+    $avgCompletedLast7Days = round($stmt->fetch()['avg_completed'] ?? 0);
+
+    // Redirects completed
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM tracker WHERE redirect_completed = 1");
+    $redirectsCompleted = $stmt->fetch()['total'];
+
+    // Redirects completed today
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM tracker WHERE redirect_completed = 1 AND DATE(time_of_visit) = CURDATE()");
+    $redirectsCompletedToday = $stmt->fetch()['total'];
+
+    // Calculate completion percentage for today only
+    $completionPercentageToday = $visitsToday > 0 ? round(($redirectsCompletedToday / $visitsToday) * 100, 1) : 0;
+
+    // Calculate completion rate for last 7 days average
+    $avgCompletionLast7Days = $avgVisitsLast7Days > 0 ? round(($avgCompletedLast7Days / $avgVisitsLast7Days) * 100, 1) : 0;
+
+    // For Total Visits, show trend of visits in last 7 days vs previous 7 days
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM tracker WHERE time_of_visit >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
+    $visitsLast7Days = $stmt->fetch()['total'];
+
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM tracker WHERE time_of_visit >= DATE_SUB(CURDATE(), INTERVAL 14 DAY) AND time_of_visit < DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
+    $visitsPrevious7Days = $stmt->fetch()['total'];
+
+    // If previous period has too few visits, use a more reasonable comparison
+    if ($visitsPrevious7Days < 5) {
+      // Compare with average of last 30 days
+      $stmt = $pdo->query("SELECT AVG(daily_visits) as avg_daily FROM (
+            SELECT DATE(time_of_visit) as visit_date, COUNT(*) as daily_visits 
+            FROM tracker 
+            WHERE time_of_visit >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) 
+            AND time_of_visit < CURDATE()
+            GROUP BY DATE(time_of_visit)
+        ) as daily_stats");
+      $avgDailyVisits30Days = round($stmt->fetch()['avg_daily'] ?? 0);
+      $totalVisitsTrend = $this->calculateTrend($visitsLast7Days, $avgDailyVisits30Days * 7);
+    } else {
+      $totalVisitsTrend = $this->calculateTrend($visitsLast7Days, $visitsPrevious7Days);
+    }
+    $visitsTrend = $this->calculateTrend($visitsToday, $avgVisitsLast7Days);
+    $redirectsTrend = $this->calculateTrend($redirectsCompletedToday, $avgCompletedLast7Days);
+    $completionTrend = $this->calculateCompletionTrend($visitsToday, $avgVisitsLast7Days, $redirectsCompletedToday, $avgCompletedLast7Days);
+
     return [
       'totalLinks' => $totalLinks,
       'totalVisits' => $totalVisits,
       'linksToday' => $linksToday,
-      'visitsToday' => $visitsToday
+      'visitsToday' => $visitsToday,
+      'redirectsCompleted' => $redirectsCompleted,
+      'redirectsCompletedToday' => $redirectsCompletedToday,
+      'completionPercentageToday' => $completionPercentageToday,
+      'totalVisitsTrend' => $totalVisitsTrend,
+      'visitsTrend' => $visitsTrend,
+      'redirectsTrend' => $redirectsTrend,
+      'completionTrend' => $completionTrend
     ];
   }
 
@@ -975,6 +1043,69 @@ class AdminController
       $this->viewRenderer->render('admin/error', [
         'error' => 'Method not allowed'
       ]);
+    }
+  }
+
+  private function calculateTrend($current, $previous): array
+  {
+    // If both are 0, no change
+    if ($current == 0 && $previous == 0) {
+      return ['direction' => 'neutral', 'percentage' => 0, 'class' => 'trend-neutral'];
+    }
+
+    // If previous is 0 but current is not, show as new data
+    if ($previous == 0 && $current > 0) {
+      return ['direction' => 'up', 'percentage' => 100, 'class' => 'trend-up'];
+    }
+
+    // If current is 0 but previous was not, show as decline
+    if ($current == 0 && $previous > 0) {
+      return ['direction' => 'down', 'percentage' => 100, 'class' => 'trend-down'];
+    }
+
+    $change = (($current - $previous) / $previous) * 100;
+    $percentage = round(abs($change), 1);
+
+    // Cap the percentage at 999% to avoid extremely large numbers
+    if ($percentage > 999) {
+      $percentage = 999;
+    }
+
+    if ($change > 0) {
+      return ['direction' => 'up', 'percentage' => $percentage, 'class' => 'trend-up'];
+    } elseif ($change < 0) {
+      return ['direction' => 'down', 'percentage' => $percentage, 'class' => 'trend-down'];
+    } else {
+      return ['direction' => 'neutral', 'percentage' => 0, 'class' => 'trend-neutral'];
+    }
+  }
+
+  private function calculateCompletionTrend($visitsToday, $avgVisitsLast7Days, $completedToday, $avgCompletedLast7Days): array
+  {
+    $completionToday = $visitsToday > 0 ? ($completedToday / $visitsToday) * 100 : 0;
+    $completionLast7Days = $avgVisitsLast7Days > 0 ? ($avgCompletedLast7Days / $avgVisitsLast7Days) * 100 : 0;
+
+    if ($completionLast7Days == 0) {
+      if ($completionToday > 0) {
+        return ['direction' => 'up', 'percentage' => 100, 'class' => 'trend-up'];
+      }
+      return ['direction' => 'neutral', 'percentage' => 0, 'class' => 'trend-neutral'];
+    }
+
+    $change = $completionToday - $completionLast7Days;
+    $percentage = round(abs($change), 1);
+
+    // Cap the percentage at 999% to avoid extremely large numbers
+    if ($percentage > 999) {
+      $percentage = 999;
+    }
+
+    if ($change > 0) {
+      return ['direction' => 'up', 'percentage' => $percentage, 'class' => 'trend-up'];
+    } elseif ($change < 0) {
+      return ['direction' => 'down', 'percentage' => $percentage, 'class' => 'trend-down'];
+    } else {
+      return ['direction' => 'neutral', 'percentage' => 0, 'class' => 'trend-neutral'];
     }
   }
 }

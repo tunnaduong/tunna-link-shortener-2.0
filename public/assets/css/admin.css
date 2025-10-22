@@ -250,6 +250,49 @@ body {
   color: #007cba;
 }
 
+.stat-subtitle {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.stat-percentage {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #28a745;
+  margin-top: 0.25rem;
+}
+
+.stat-trend {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.trend-icon {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.trend-text {
+  font-size: 0.8rem;
+}
+
+.trend-up {
+  color: #28a745;
+}
+
+.trend-down {
+  color: #dc3545;
+}
+
+.trend-neutral {
+  color: #6c757d;
+}
+
 .dashboard-sections {
   display: grid;
   gap: 2rem;

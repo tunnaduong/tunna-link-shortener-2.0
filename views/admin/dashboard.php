@@ -5,23 +5,41 @@ $content = '
     
     <div class="stats-grid">
         <div class="stat-card">
-            <h3>Total Links</h3>
-            <div class="stat-number">' . $stats['totalLinks'] . '</div>
-        </div>
-        
-        <div class="stat-card">
             <h3>Total Visits</h3>
             <div class="stat-number">' . $stats['totalVisits'] . '</div>
+            <div class="stat-trend ' . $stats['totalVisitsTrend']['class'] . '">
+                <span class="trend-icon">' . ($stats['totalVisitsTrend']['direction'] == 'up' ? '↗' : ($stats['totalVisitsTrend']['direction'] == 'down' ? '↘' : '→')) . '</span>
+                <span class="trend-text">' . $stats['totalVisitsTrend']['percentage'] . '%</span>
+            </div>
         </div>
-        
-        <div class="stat-card">
-            <h3>Links Today</h3>
-            <div class="stat-number">' . $stats['linksToday'] . '</div>
-        </div>
-        
+ 
         <div class="stat-card">
             <h3>Visits Today</h3>
             <div class="stat-number">' . $stats['visitsToday'] . '</div>
+            <div class="stat-trend ' . $stats['visitsTrend']['class'] . '">
+                <span class="trend-icon">' . ($stats['visitsTrend']['direction'] == 'up' ? '↗' : ($stats['visitsTrend']['direction'] == 'down' ? '↘' : '→')) . '</span>
+                <span class="trend-text">' . $stats['visitsTrend']['percentage'] . '%</span>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Redirects Completed</h3>
+            <div class="stat-number">' . $stats['redirectsCompleted'] . '</div>
+            <div class="stat-subtitle">' . $stats['redirectsCompletedToday'] . ' today</div>
+            <div class="stat-trend ' . $stats['redirectsTrend']['class'] . '">
+                <span class="trend-icon">' . ($stats['redirectsTrend']['direction'] == 'up' ? '↗' : ($stats['redirectsTrend']['direction'] == 'down' ? '↘' : '→')) . '</span>
+                <span class="trend-text">' . $stats['redirectsTrend']['percentage'] . '%</span>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Completion Rate Today</h3>
+            <div class="stat-number">' . $stats['redirectsCompletedToday'] . '/' . $stats['visitsToday'] . '</div>
+            <div class="stat-percentage">' . $stats['completionPercentageToday'] . '%</div>
+            <div class="stat-trend ' . $stats['completionTrend']['class'] . '">
+                <span class="trend-icon">' . ($stats['completionTrend']['direction'] == 'up' ? '↗' : ($stats['completionTrend']['direction'] == 'down' ? '↘' : '→')) . '</span>
+                <span class="trend-text">' . $stats['completionTrend']['percentage'] . '%</span>
+            </div>
         </div>
     </div>
     
