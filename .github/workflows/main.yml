@@ -10,9 +10,12 @@ jobs:
     steps:
         - uses: actions/checkout@v1
         - uses: michaelw90/PHP-Lint@master
+  
   deploy:
-    # Remove needs: [phplint] - let the action check job status
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     steps:
       - uses: actions/checkout@v4
       - name: Deploy to aaPanel
@@ -21,3 +24,5 @@ jobs:
           panel_url: https://server.tunnaduong.com
           webhook_key: ${{ secrets.AAPANEL_WEBHOOK_KEY }}
           ntfy_topic: tunnapi-git-pulls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
