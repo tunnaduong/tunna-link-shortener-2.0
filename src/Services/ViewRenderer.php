@@ -21,6 +21,9 @@ class ViewRenderer
       throw new \Exception("View file not found: {$viewFile}");
     }
 
+    // Check if this is an admin view by the view path
+    $isAdminView = strpos($view, 'admin/') === 0;
+
     // Extract data to variables
     extract($data);
 
@@ -33,19 +36,30 @@ class ViewRenderer
     // Get the content
     $content = ob_get_clean();
 
-    // Render with layout if it exists
-    $this->renderWithLayout($content, $data);
+    // Render with appropriate layout
+    $this->renderWithLayout($content, $data, $isAdminView);
   }
 
-  private function renderWithLayout(string $content, array $data): void
+  private function renderWithLayout(string $content, array $data, bool $isAdminView = false): void
   {
-    $layoutFile = $this->layoutsPath . '/main.php';
-
-    if (file_exists($layoutFile)) {
-      extract($data);
-      include $layoutFile;
+    if ($isAdminView) {
+      // Use admin layout for admin views
+      $layoutFile = $this->viewsPath . '/admin/layout.php';
+      if (file_exists($layoutFile)) {
+        extract($data);
+        include $layoutFile;
+      } else {
+        echo $content;
+      }
     } else {
-      echo $content;
+      // Use main layout for regular views
+      $layoutFile = $this->layoutsPath . '/main.php';
+      if (file_exists($layoutFile)) {
+        extract($data);
+        include $layoutFile;
+      } else {
+        echo $content;
+      }
     }
   }
 

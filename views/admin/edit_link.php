@@ -205,6 +205,6 @@ previewImagePreview.addEventListener("drop", function(e) {
 </script>
 ';
 
-// Include the layout
-include __DIR__ . '/layout.php';
+// The layout is handled by ViewRenderer
+// No need to include layout.php directly
 ?>
