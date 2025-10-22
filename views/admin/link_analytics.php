@@ -188,4 +188,5 @@ $content .= '
 
 // The layout is handled by ViewRenderer
 // No need to include layout.php directly
+echo $content;
 ?>

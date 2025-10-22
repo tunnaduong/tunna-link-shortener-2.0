@@ -164,4 +164,5 @@ $pageTitle = 'Batch URL Shortening Results';
 <?php
 // The layout is handled by ViewRenderer
 // No need to include layout.php directly
+echo $content;
 ?>

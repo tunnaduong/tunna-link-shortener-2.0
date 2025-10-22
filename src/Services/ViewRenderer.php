@@ -21,8 +21,8 @@ class ViewRenderer
       throw new \Exception("View file not found: {$viewFile}");
     }
 
-    // Check if this is an admin view by the view path
-    $isAdminView = strpos($view, 'admin/') === 0;
+    // Check if this is an admin view by the view path, but exclude login page
+    $isAdminView = strpos($view, 'admin/') === 0 && $view !== 'admin/login';
 
     // Extract data to variables
     extract($data);
@@ -42,6 +42,13 @@ class ViewRenderer
 
   private function renderWithLayout(string $content, array $data, bool $isAdminView = false): void
   {
+    // Check if this is a complete HTML page (like login) that doesn't need a layout
+    if (strpos($content, '<!DOCTYPE html>') !== false || strpos($content, '<html') !== false) {
+      // This is already a complete HTML page, just output it
+      echo $content;
+      return;
+    }
+
     if ($isAdminView) {
       // Use admin layout for admin views
       $layoutFile = $this->viewsPath . '/admin/layout.php';
