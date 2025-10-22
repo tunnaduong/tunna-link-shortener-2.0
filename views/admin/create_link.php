@@ -195,25 +195,25 @@ $content = '
 // Tab switching functionality
 function switchTab(tabName) {
     // Hide all tab contents
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
+    document.querySelectorAll(\'.tab-content\').forEach(tab => {
+        tab.classList.remove(\'active\');
     });
     
     // Remove active class from all tab buttons
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
+    document.querySelectorAll(\'.tab-btn\').forEach(btn => {
+        btn.classList.remove(\'active\');
     });
     
     // Show selected tab content
-    document.getElementById(tabName + '-tab').classList.add('active');
+    document.getElementById(tabName + \'-tab\').classList.add(\'active\');
     
     // Add active class to clicked button
-    event.target.classList.add('active');
+    event.target.classList.add(\'active\');
 }
 
 // Clear batch form
 function clearBatchForm() {
-    document.getElementById('batch_urls').value = '';
+    document.getElementById(\'batch_urls\').value = \'\';
 }
 
 document.addEventListener("DOMContentLoaded", function() {

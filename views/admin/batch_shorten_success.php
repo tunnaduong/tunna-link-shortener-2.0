@@ -23,11 +23,13 @@ $content = '
         </div>
     </div>
     
-    <div class="results-details">
-        <!-- Successful Results -->
-        ' . (!empty($results[\'successful\']) ? '
+    <div class="results-details">';
+
+// Successful Results
+if (!empty($results['successful'])) {
+  $content .= '
         <div class="results-section">
-            <h3>✅ Successfully Created (' . count($results[\'successful\']) . ')</h3>
+            <h3>✅ Successfully Created (' . count($results['successful']) . ')</h3>
             <div class="results-table">
                 <table>
                     <thead>
@@ -39,30 +41,34 @@ $content = '
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        ' . implode(\'\', array_map(function($item) {
-                            return \'
-                            <tr>
-                                <td>\' . $item[\'line\'] . \'</td>
-                                <td><a href="\' . htmlspecialchars($item[\'url\']) . \'" target="_blank">\' . htmlspecialchars(substr($item[\'url\'], 0, 50)) . (strlen($item[\'url\']) > 50 ? \'...\' : \'\') . \'</a></td>
-                                <td><code>\' . htmlspecialchars($item[\'code\']) . \'</code></td>
-                                <td><a href="\' . htmlspecialchars($item[\'short_url\']) . \'" target="_blank">\' . htmlspecialchars($item[\'short_url\']) . \'</a></td>
-                                <td>
-                                    <button onclick="copyToClipboard(\'\' . htmlspecialchars($item[\'short_url\']) . \'\')" class="btn btn-small">Copy</button>
-                                    <a href="/admin/analytics?code=\' . urlencode($item[\'code\']) . \'" class="btn btn-small btn-secondary">Analytics</a>
-                                </td>
-                            </tr>\';
-                        }, $results[\'successful\'])) . \'
+                    <tbody>';
+
+  foreach ($results['successful'] as $item) {
+    $content .= '
+                        <tr>
+                            <td>' . $item['line'] . '</td>
+                            <td><a href="' . htmlspecialchars($item['url']) . '" target="_blank">' . htmlspecialchars(substr($item['url'], 0, 50)) . (strlen($item['url']) > 50 ? '...' : '') . '</a></td>
+                            <td><code>' . htmlspecialchars($item['code']) . '</code></td>
+                            <td><a href="' . htmlspecialchars($item['short_url']) . '" target="_blank">' . htmlspecialchars($item['short_url']) . '</a></td>
+                            <td>
+                                <button onclick="copyToClipboard(\'' . htmlspecialchars($item['short_url']) . '\')" class="btn btn-small">Copy</button>
+                                <a href="/admin/analytics?code=' . urlencode($item['code']) . '" class="btn btn-small btn-secondary">Analytics</a>
+                            </td>
+                        </tr>';
+  }
+
+  $content .= '
                     </tbody>
                 </table>
             </div>
-        </div>
-        ' : \'\') . \'
-        
-        <!-- Duplicate Results -->
-        ' . (!empty($results[\'duplicates\']) ? \'
+        </div>';
+}
+
+// Duplicate Results
+if (!empty($results['duplicates'])) {
+  $content .= '
         <div class="results-section">
-            <h3>⚠️ Already Existed (' . count($results[\'duplicates\']) . ')</h3>
+            <h3>⚠️ Already Existed (' . count($results['duplicates']) . ')</h3>
             <div class="results-table">
                 <table>
                     <thead>
@@ -74,30 +80,34 @@ $content = '
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        ' . implode(\'\', array_map(function($item) {
-                            return \'
-                            <tr>
-                                <td>\' . $item[\'line\'] . \'</td>
-                                <td><a href="\' . htmlspecialchars($item[\'url\']) . \'" target="_blank">\' . htmlspecialchars(substr($item[\'url\'], 0, 50)) . (strlen($item[\'url\']) > 50 ? \'...\' : \'\') . \'</a></td>
-                                <td><code>\' . htmlspecialchars($item[\'code\']) . \'</code></td>
-                                <td><a href="\' . htmlspecialchars($item[\'short_url\']) . \'" target="_blank">\' . htmlspecialchars($item[\'short_url\']) . \'</a></td>
-                                <td>
-                                    <button onclick="copyToClipboard(\'\' . htmlspecialchars($item[\'short_url\']) . \'\')" class="btn btn-small">Copy</button>
-                                    <a href="/admin/analytics?code=\' . urlencode($item[\'code\']) . \'" class="btn btn-small btn-secondary">Analytics</a>
-                                </td>
-                            </tr>\';
-                        }, $results[\'duplicates\'])) . \'
+                    <tbody>';
+
+  foreach ($results['duplicates'] as $item) {
+    $content .= '
+                        <tr>
+                            <td>' . $item['line'] . '</td>
+                            <td><a href="' . htmlspecialchars($item['url']) . '" target="_blank">' . htmlspecialchars(substr($item['url'], 0, 50)) . (strlen($item['url']) > 50 ? '...' : '') . '</a></td>
+                            <td><code>' . htmlspecialchars($item['code']) . '</code></td>
+                            <td><a href="' . htmlspecialchars($item['short_url']) . '" target="_blank">' . htmlspecialchars($item['short_url']) . '</a></td>
+                            <td>
+                                <button onclick="copyToClipboard(\'' . htmlspecialchars($item['short_url']) . '\')" class="btn btn-small">Copy</button>
+                                <a href="/admin/analytics?code=' . urlencode($item['code']) . '" class="btn btn-small btn-secondary">Analytics</a>
+                            </td>
+                        </tr>';
+  }
+
+  $content .= '
                     </tbody>
                 </table>
             </div>
-        </div>
-        ' : \'\') . \'
-        
-        <!-- Error Results -->
-        ' . (!empty($results[\'errors\']) ? \'
+        </div>';
+}
+
+// Error Results
+if (!empty($results['errors'])) {
+  $content .= '
         <div class="results-section">
-            <h3>❌ Errors (' . count($results[\'errors\']) . ')</h3>
+            <h3>❌ Errors (' . count($results['errors']) . ')</h3>
             <div class="results-table">
                 <table>
                     <thead>
@@ -107,20 +117,25 @@ $content = '
                             <th>Error</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        ' . implode(\'\', array_map(function($item) {
-                            return \'
-                            <tr>
-                                <td>\' . $item[\'line\'] . \'</td>
-                                <td>\' . htmlspecialchars(substr($item[\'url\'], 0, 50)) . (strlen($item[\'url\']) > 50 ? \'...\' : \'\') . \'</td>
-                                <td class="error-message">\' . htmlspecialchars($item[\'error\']) . \'</td>
-                            </tr>\';
-                        }, $results[\'errors\'])) . \'
+                    <tbody>';
+
+  foreach ($results['errors'] as $item) {
+    $content .= '
+                        <tr>
+                            <td>' . $item['line'] . '</td>
+                            <td>' . htmlspecialchars(substr($item['url'], 0, 50)) . (strlen($item['url']) > 50 ? '...' : '') . '</td>
+                            <td class="error-message">' . htmlspecialchars($item['error']) . '</td>
+                        </tr>';
+  }
+
+  $content .= '
                     </tbody>
                 </table>
             </div>
-        </div>
-        ' : \'\') . \'
+        </div>';
+}
+
+$content .= '
     </div>
     
     <div class="success-actions">
