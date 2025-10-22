@@ -1,5 +1,5 @@
 <?php
-$adsUrl = $link->getAdsClickUrl() ?? "https://tunn.ad";
+$adsUrl = $link->getAdsClickUrl() ?? "https://zalo.me/0365520031";
 $adsImg = $link->getAdsImgUrl() ?? "/assets/images/demo.gif";
 $promotedBy = $link->getAdsPromotedBy() ?? "tunnaAds";
 ?>

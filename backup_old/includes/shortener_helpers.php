@@ -1,7 +1,7 @@
 <?php
 function renderQRCodeSection()
 {
-    return <<<HTML
+  return <<<HTML
     <div id="openModalBtn" onclick="modal.show()" class="btn">Mở trong điện thoại (QR Code)</div>
     <div id="myModal" class="modal">
         <div class="modal-content">
@@ -19,10 +19,10 @@ function renderQRCodeSection()
 
 function renderLinkInfo($row, $visitCount = 0)
 {
-    $createdAt = $row['created_at'] ?? 'N/A';
-    $passwordInfo = $row['password'] ? 'Có' : 'Không có';
+  $createdAt = $row['created_at'] ?? 'N/A';
+  $passwordInfo = $row['password'] ? 'Có' : 'Không có';
 
-    return <<<HTML
+  return <<<HTML
     <h3 id="link_info">Thông tin liên kết</h3>
     <table class="table" style="margin-bottom: 20px;">
         <tbody>
@@ -39,26 +39,26 @@ function renderLinkInfo($row, $visitCount = 0)
 
 function renderTags($tags)
 {
-    // Nếu danh sách thẻ không có dữ liệu, trả về thông báo mặc định
-    if (empty($tags)) {
-        return '<span class="badge">Không có thẻ</span>';
-    }
+  // Nếu danh sách thẻ không có dữ liệu, trả về thông báo mặc định
+  if (empty($tags)) {
+    return '<span class="badge">Không có thẻ</span>';
+  }
 
-    // Phân tách chuỗi thành mảng (nếu lưu trữ thẻ dưới dạng chuỗi)
-    $tagsArray = explode(',', $tags);
+  // Phân tách chuỗi thành mảng (nếu lưu trữ thẻ dưới dạng chuỗi)
+  $tagsArray = explode(',', $tags);
 
-    // Tạo HTML cho từng thẻ
-    $html = '';
-    foreach ($tagsArray as $tag) {
-        $html .= "<span class='badge'>" . htmlspecialchars(trim($tag)) . "</span> ";
-    }
+  // Tạo HTML cho từng thẻ
+  $html = '';
+  foreach ($tagsArray as $tag) {
+    $html .= "<span class='badge'>" . htmlspecialchars(trim($tag)) . "</span> ";
+  }
 
-    return "<p class='tag'>Thẻ: " . $html . "</p>";
+  return "<p class='tag'>Thẻ: " . $html . "</p>";
 }
 
 function renderFooter()
 {
-    return <<<HTML
+  return <<<HTML
     <footer>
         <p class="footer--copyright">
             <span id="footer--mobile">© 2023 Duong Tung Anh<br /><span style="color: white; font-weight: 300; font-size: 15px">All rights reserved</span></span>
@@ -74,11 +74,11 @@ function renderFooter()
 
 function renderAds($row)
 {
-    $adsUrl = $row['ads_click_url'] ?? "https://zalo.me/0707006421";
-    $adsImg = $row['ads_img_url'] ?? "/assets/images/demo.gif";
-    $promotedBy = $row['ads_promoted_by'] ?? "tunnaAds";
+  $adsUrl = $row['ads_click_url'] ?? "https://zalo.me/0365520031";
+  $adsImg = $row['ads_img_url'] ?? "/assets/images/demo.gif";
+  $promotedBy = $row['ads_promoted_by'] ?? "tunnaAds";
 
-    return <<<HTML
+  return <<<HTML
     <a href="{$adsUrl}" id="ads">
         <img class="ads" src="{$adsImg}" alt="Ads" width="550">
     </a>
@@ -90,7 +90,7 @@ function renderAds($row)
 
 function renderShareOptions()
 {
-    return <<<HTML
+  return <<<HTML
     <h2><span><i class="fas fa-share"></i> Chia sẻ</span></h2>
     <div class="social">
         <i onclick="fbShare()" class="fab fa-facebook"></i>
@@ -102,7 +102,7 @@ function renderShareOptions()
 
 function renderNextButton($nextUrl, $waitSeconds = 10, $countdownDelay = 1000)
 {
-    return <<<HTML
+  return <<<HTML
     <!-- onclick="openNewWindow(`{$nextUrl}`)" -->
     <a href="#ads" id="next_btn" class="scroll-link btn btn-primary disabled-button">
         Vui lòng đợi {$waitSeconds} giây...
@@ -126,23 +126,23 @@ function renderNextButton($nextUrl, $waitSeconds = 10, $countdownDelay = 1000)
 
 function recaptchaVerify($recaptchaResponse)
 {
-    $secretKey = '6Ldga7MqAAAAANQwYsiNr6DJw70CvNqpsZPjLthL'; // Replace with your secret key
-    $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
-    $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse . '&remoteip=' . $_SERVER['REMOTE_ADDR']);
-    $responseKeys = json_decode($response, true);
+  $secretKey = '6Ldga7MqAAAAANQwYsiNr6DJw70CvNqpsZPjLthL'; // Replace with your secret key
+  $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+  $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse . '&remoteip=' . $_SERVER['REMOTE_ADDR']);
+  $responseKeys = json_decode($response, true);
 
-    if ($responseKeys['success']) {
-        // Validation passed
-        return true;
-    } else {
-        // Validation failed
-        return false;
-    }
+  if ($responseKeys['success']) {
+    // Validation passed
+    return true;
+  } else {
+    // Validation failed
+    return false;
+  }
 }
 
 function renderVerifyButton($waitSeconds = 10, $countdownDelay = 1000)
 {
-    return <<<HTML
+  return <<<HTML
     <button type="submit" id="next_btn" class="btn btn-primary disabled-button" style="min-width: 304px;">
         Vui lòng đợi {$waitSeconds} giây...
     </button>
@@ -164,7 +164,7 @@ function renderVerifyButton($waitSeconds = 10, $countdownDelay = 1000)
 
 function renderContinueButton($nextUrl)
 {
-    return <<<HTML
+  return <<<HTML
     <a href="#ads" id="next_btn" class="scroll-link btn btn-primary">
         Liên kết của bạn đã sẵn sàng!
     </a>
@@ -174,7 +174,7 @@ function renderContinueButton($nextUrl)
 
 function renderVisitButton($nextUrl, $waitSeconds = 10, $countdownDelay = 1000)
 {
-    return <<<HTML
+  return <<<HTML
     <div id="next_btn2" onclick="openNewWindow(`{$nextUrl}`)" style="margin-top: 10px" class="btn disabled-button btn-primary">
         Vui lòng đợi {$waitSeconds} giây...
     </div>
@@ -196,7 +196,7 @@ function renderVisitButton($nextUrl, $waitSeconds = 10, $countdownDelay = 1000)
 
 function renderVisitButton2($nextUrl)
 {
-    return <<<HTML
+  return <<<HTML
     <div onclick="openNewWindow(`{$nextUrl}`)" style="margin-top: 10px" id="next_btn2" class="btn btn-primary">
         Mở liên kết!
     </div>
