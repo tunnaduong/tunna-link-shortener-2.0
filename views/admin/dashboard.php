@@ -64,7 +64,7 @@ $content = '
 foreach ($recentLinks as $link) {
   $content .= '
                         <tr>
-                            <td><code><a href="' . ($_ENV['APP_URL'] ?? 'https://tunn.ad') . '/' . htmlspecialchars($link['code']) . '" target="_blank">' . htmlspecialchars($link['code']) . '</a></code></td>
+                            <td><code><a href="' . ($_ENV['APP_URL'] ?? 'https://tunn.ad') . '/' . htmlspecialchars($link['code']) . '" target="_blank" class="url-link">' . htmlspecialchars($link['code']) . '</a></code></td>
                             <td class="url-cell">
                                 <a href="' . htmlspecialchars($link['next_url']) . '" target="_blank" class="url-link">
                                     ' . htmlspecialchars(substr($link['next_url'], 0, 50)) . (strlen($link['next_url']) > 50 ? '...' : '') . '
