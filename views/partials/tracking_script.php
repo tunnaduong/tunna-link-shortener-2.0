@@ -1,4 +1,10 @@
 <script>
+  // Global variables for tracking
+  window.linkData = {
+    code: "<?= htmlspecialchars($link->getCode()) ?>",
+    trackerId: null
+  };
+
   // Wait for DOM to be ready
   document.addEventListener('DOMContentLoaded', function () {
     try {
@@ -31,6 +37,11 @@
         .then(response => response.json())
         .then(data => {
           console.log('Tracking success:', data);
+          // Store tracker ID in global variable
+          if (data.tracker_id) {
+            window.linkData.trackerId = data.tracker_id;
+            console.log('Tracker ID stored:', data.tracker_id);
+          }
         })
         .catch(error => {
           console.error('Tracking error:', error);
@@ -42,6 +53,10 @@
               data: data,
               success: function (response) {
                 console.log('Tracking success (jQuery fallback):', response);
+                if (response.tracker_id) {
+                  window.linkData.trackerId = response.tracker_id;
+                  console.log('Tracker ID stored (jQuery fallback):', response.tracker_id);
+                }
               },
               error: function (xhr, status, error) {
                 console.error('Tracking error (jQuery fallback):', error);

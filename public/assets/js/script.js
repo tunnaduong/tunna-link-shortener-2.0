@@ -101,9 +101,10 @@ function openNewWindow(url) {
 function handleTrackDidContinue() {
   return new Promise((resolve, reject) => {
     try {
-      const currentPath = window.location.pathname;
-      const linkCode = currentPath.substring(1); // Remove leading slash
-      const trackerId = localStorage.getItem("tracker_id_" + linkCode);
+      // Get tracker ID from global variable set by PHP
+      const trackerId = window.linkData?.trackerId;
+      const linkCode =
+        window.linkData?.code || window.location.pathname.substring(1);
 
       if (trackerId) {
         console.log("Tracking redirect completion for tracker ID:", trackerId);
