@@ -8,8 +8,8 @@ use App\Services\TrackerService;
 
 class LinkService
 {
-  private LinkRepository $linkRepository;
-  private TrackerService $trackerService;
+  private $linkRepository;
+  private $trackerService;
 
   public function __construct(LinkRepository $linkRepository, TrackerService $trackerService)
   {

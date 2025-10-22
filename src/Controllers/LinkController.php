@@ -9,10 +9,10 @@ use App\Utils\UrlGenerator;
 
 class LinkController
 {
-  private LinkService $linkService;
-  private RecaptchaService $recaptchaService;
-  private ViewRenderer $viewRenderer;
-  private UrlGenerator $urlGenerator;
+  private $linkService;
+  private $recaptchaService;
+  private $viewRenderer;
+  private $urlGenerator;
 
   public function __construct(
     LinkService $linkService,

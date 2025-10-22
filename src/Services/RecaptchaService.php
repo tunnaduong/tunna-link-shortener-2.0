@@ -4,7 +4,7 @@ namespace App\Services;
 
 class RecaptchaService
 {
-  private string $secretKey;
+  private $secretKey;
 
   public function __construct(string $secretKey)
   {

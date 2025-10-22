@@ -4,7 +4,7 @@ namespace App\Utils;
 
 class UserAgentParser
 {
-  private array $osArray = [
+  private $osArray = [
     '/windows nt 10.0/i' => 'Windows 10/11',
     '/windows nt 6.3/i' => 'Windows 8.1',
     '/windows nt 6.2/i' => 'Windows 8',

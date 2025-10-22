@@ -4,11 +4,11 @@ namespace App\Config;
 
 class DatabaseConfig
 {
-  private string $host;
-  private string $username;
-  private string $password;
-  private string $database;
-  private string $charset;
+  private $host;
+  private $username;
+  private $password;
+  private $database;
+  private $charset;
 
   public function __construct()
   {

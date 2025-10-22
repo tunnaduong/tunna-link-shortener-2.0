@@ -4,8 +4,8 @@ namespace App\Services;
 
 class ViewRenderer
 {
-  private string $viewsPath;
-  private string $layoutsPath;
+  private $viewsPath;
+  private $layoutsPath;
 
   public function __construct(string $viewsPath = __DIR__ . '/../../views', string $layoutsPath = __DIR__ . '/../../views/layouts')
   {

@@ -4,18 +4,18 @@ namespace App\Models;
 
 class Tracker
 {
-  private ?int $id;
-  private string $refCode;
-  private ?string $refUrl;
-  private string $ipAddress;
-  private ?string $location;
-  private ?string $screenSize;
-  private ?string $browser;
-  private ?string $operatingSystem;
-  private ?string $browserUserAgent;
-  private bool $redirectCompleted;
-  private ?\DateTime $redirectCompletedAt;
-  private \DateTime $createdAt;
+  private $id;
+  private $refCode;
+  private $refUrl;
+  private $ipAddress;
+  private $location;
+  private $screenSize;
+  private $browser;
+  private $operatingSystem;
+  private $browserUserAgent;
+  private $redirectCompleted;
+  private $redirectCompletedAt;
+  private $createdAt;
 
   public function __construct(
     string $refCode,

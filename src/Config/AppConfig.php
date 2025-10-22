@@ -4,7 +4,7 @@ namespace App\Config;
 
 class AppConfig
 {
-  private array $config;
+  private $config;
 
   public function __construct()
   {

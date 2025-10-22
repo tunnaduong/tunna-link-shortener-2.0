@@ -8,9 +8,9 @@ use PDOException;
 
 class DatabaseConnection
 {
-  private static ?DatabaseConnection $instance = null;
-  private ?PDO $connection = null;
-  private DatabaseConfig $config;
+  private static $instance = null;
+  private $connection = null;
+  private $config;
 
   private function __construct(DatabaseConfig $config)
   {

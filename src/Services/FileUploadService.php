@@ -6,9 +6,9 @@ use App\Utils\DebugHelper;
 
 class FileUploadService
 {
-  private string $uploadDir;
-  private array $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-  private int $maxFileSize = 5 * 1024 * 1024; // 5MB
+  private $uploadDir;
+  private $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  private $maxFileSize = 5 * 1024 * 1024; // 5MB
 
   public function __construct()
   {

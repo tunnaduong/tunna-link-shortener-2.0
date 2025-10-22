@@ -4,7 +4,7 @@ namespace App\Utils;
 
 class UrlGenerator
 {
-  private string $baseUrl;
+  private $baseUrl;
 
   public function __construct(string $baseUrl)
   {

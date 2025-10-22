@@ -4,21 +4,21 @@ namespace App\Models;
 
 class Link
 {
-  private ?int $id;
-  private string $code;
-  private string $nextUrl;
-  private ?string $linkTitle;
-  private ?string $linkExcerpt;
-  private ?string $linkPreviewUrl;
-  private ?string $password;
-  private int $redirectType;
-  private int $waitSeconds;
-  private int $countdownDelay;
-  private ?string $tag;
-  private ?string $adsClickUrl;
-  private ?string $adsImgUrl;
-  private ?string $adsPromotedBy;
-  private \DateTime $createdAt;
+  private $id;
+  private $code;
+  private $nextUrl;
+  private $linkTitle;
+  private $linkExcerpt;
+  private $linkPreviewUrl;
+  private $password;
+  private $redirectType;
+  private $waitSeconds;
+  private $countdownDelay;
+  private $tag;
+  private $adsClickUrl;
+  private $adsImgUrl;
+  private $adsPromotedBy;
+  private $createdAt;
 
   public function __construct(
     string $code,

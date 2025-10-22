@@ -9,7 +9,7 @@ use PDOException;
 
 class LinkRepository
 {
-  private DatabaseConnection $dbConnection;
+  private $dbConnection;
 
   public function __construct(DatabaseConnection $dbConnection)
   {

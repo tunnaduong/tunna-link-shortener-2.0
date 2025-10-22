@@ -4,10 +4,10 @@ namespace App\Router;
 
 class Route
 {
-  private string $method;
-  private string $path;
+  private $method;
+  private $path;
   private $handler;
-  private array $parameters = [];
+  private $parameters = [];
 
   public function __construct(string $method, string $path, $handler)
   {

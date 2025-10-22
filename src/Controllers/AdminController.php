@@ -15,11 +15,11 @@ use App\Config\AppConfig;
 
 class AdminController
 {
-  private LinkService $linkService;
-  private TrackerService $trackerService;
-  private ViewRenderer $viewRenderer;
-  private FileUploadService $fileUploadService;
-  private OpenGraphService $openGraphService;
+  private $linkService;
+  private $trackerService;
+  private $viewRenderer;
+  private $fileUploadService;
+  private $openGraphService;
 
   public function __construct()
   {

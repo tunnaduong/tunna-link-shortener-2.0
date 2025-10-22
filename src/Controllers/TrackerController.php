@@ -6,7 +6,7 @@ use App\Services\TrackerService;
 
 class TrackerController
 {
-  private TrackerService $trackerService;
+  private $trackerService;
 
   public function __construct(TrackerService $trackerService)
   {

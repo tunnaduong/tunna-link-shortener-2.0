@@ -9,9 +9,9 @@ use App\Utils\IpGeolocation;
 
 class TrackerService
 {
-  private TrackerRepository $trackerRepository;
-  private UserAgentParser $userAgentParser;
-  private IpGeolocation $ipGeolocation;
+  private $trackerRepository;
+  private $userAgentParser;
+  private $ipGeolocation;
 
   public function __construct(
     TrackerRepository $trackerRepository,

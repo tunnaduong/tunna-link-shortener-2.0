@@ -21,8 +21,8 @@ use App\Utils\UserAgentParser;
 
 class Router
 {
-  private array $routes = [];
-  private array $dependencies = [];
+  private $routes = [];
+  private $dependencies = [];
 
   public function __construct()
   {

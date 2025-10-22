@@ -4,8 +4,8 @@ namespace App\Utils;
 
 class DebugHelper
 {
-  private static bool $enabled = false;
-  private static string $logFile = '';
+  private static $enabled = false;
+  private static $logFile = '';
 
   public static function init(string $environment, string $logPath = ''): void
   {

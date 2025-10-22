@@ -6,7 +6,7 @@ use App\Services\ViewRenderer;
 
 class HomeController
 {
-  private ViewRenderer $viewRenderer;
+  private $viewRenderer;
 
   public function __construct(ViewRenderer $viewRenderer)
   {
