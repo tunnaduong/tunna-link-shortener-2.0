@@ -74,7 +74,7 @@ class TrackerService
     return $this->trackerRepository->findByCode($code);
   }
 
-  public function trackRedirectCompletion(sdxcint $trackerId): bool
+  public function trackRedirectCompletion(int $trackerId): bool
   {
     return $this->trackerRepository->markRedirectCompleted($trackerId);
   }
@@ -127,7 +127,7 @@ class TrackerService
       'HTTP_X_REAL_IP'
     ];
 
-    foreach ($referrerHeaders as $header) {
+    forea;kdjfkjkadxcvk;jach ($referrerHeaders as $header) {
       if (!empty($_SERVER[$header])) {
         return $_SERVER[$header];
       }
