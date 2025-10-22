@@ -138,7 +138,7 @@ $content .= '
 foreach ($topLinks as $link) {
   $content .= '
                         <tr>
-                            <td><code>' . htmlspecialchars($link['code']) . '</code></td>
+                            <td><code><a href="' . ($_ENV['APP_URL'] ?? 'https://tunn.ad') . '/' . htmlspecialchars($link['code']) . '" target="_blank">' . htmlspecialchars($link['code']) . '</a></code></td>
                             <td class="url-cell">
                                 <a href="' . htmlspecialchars($link['next_url']) . '" target="_blank" class="url-link">
                                     ' . htmlspecialchars(substr($link['next_url'], 0, 40)) . (strlen($link['next_url']) > 40 ? '...' : '') . '

@@ -49,7 +49,9 @@ $pageTitle = 'Batch URL Shortening Results';
                   <td><a href="<?php echo htmlspecialchars($item['url']); ?>"
                       target="_blank"><?php echo htmlspecialchars(substr($item['url'], 0, 50)); ?><?php echo strlen($item['url']) > 50 ? '...' : ''; ?></a>
                   </td>
-                  <td><code><?php echo htmlspecialchars($item['code']); ?></code></td>
+                  <td>
+                    <code><a href="<?php echo ($_ENV['APP_URL'] ?? 'https://tunn.ad') . '/' . htmlspecialchars($item['code']); ?>" target="_blank"><?php echo htmlspecialchars($item['code']); ?></a></code>
+                  </td>
                   <td><a href="<?php echo htmlspecialchars($item['short_url']); ?>"
                       target="_blank"><?php echo htmlspecialchars($item['short_url']); ?></a></td>
                   <td>
@@ -88,7 +90,9 @@ $pageTitle = 'Batch URL Shortening Results';
                   <td><a href="<?php echo htmlspecialchars($item['url']); ?>"
                       target="_blank"><?php echo htmlspecialchars(substr($item['url'], 0, 50)); ?><?php echo strlen($item['url']) > 50 ? '...' : ''; ?></a>
                   </td>
-                  <td><code><?php echo htmlspecialchars($item['code']); ?></code></td>
+                  <td>
+                    <code><a href="<?php echo ($_ENV['APP_URL'] ?? 'https://tunn.ad') . '/' . htmlspecialchars($item['code']); ?>" target="_blank"><?php echo htmlspecialchars($item['code']); ?></a></code>
+                  </td>
                   <td><a href="<?php echo htmlspecialchars($item['short_url']); ?>"
                       target="_blank"><?php echo htmlspecialchars($item['short_url']); ?></a></td>
                   <td>

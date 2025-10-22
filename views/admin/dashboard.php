@@ -105,7 +105,7 @@ $content .= '
 foreach ($recentVisits as $visit) {
   $content .= '
                         <tr>
-                            <td><code>' . htmlspecialchars($visit['ref_code']) . '</code></td>
+                            <td><a href="' . ($_ENV['APP_URL'] ?? 'https://tunn.ad') . '/' . htmlspecialchars($visit['ref_code']) . '" target="_blank" class="url-link"><code>' . htmlspecialchars($visit['ref_code']) . '</code></a></td>
                             <td>' . htmlspecialchars($visit['ip_address']) . '</td>
                             <td>' . htmlspecialchars($visit['location'] ?? 'Unknown') . '</td>
                             <td>' . htmlspecialchars($visit['browser'] ?? 'Unknown') . '</td>
