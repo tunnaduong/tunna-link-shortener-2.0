@@ -127,7 +127,7 @@ class TrackerService
       'HTTP_X_REAL_IP'
     ];
 
-    forea;kdjfkjkadxcvk;jach ($referrerHeaders as $header) {
+    foreach ($referrerHeaders as $header) {
       if (!empty($_SERVER[$header])) {
         return $_SERVER[$header];
       }
