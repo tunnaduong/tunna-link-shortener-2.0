@@ -15,6 +15,8 @@ class Tracker
   private $browserUserAgent;
   private $redirectCompleted;
   private $redirectCompletedAt;
+  private $coordinates;
+  private $isp;
   private $createdAt;
 
   public function __construct(
@@ -29,6 +31,8 @@ class Tracker
     ?string $browserUserAgent = null,
     bool $redirectCompleted = false,
     ?\DateTime $redirectCompletedAt = null,
+    ?array $coordinates = null,
+    ?string $isp = null,
     ?\DateTime $createdAt = null
   ) {
     $this->id = $id;
@@ -42,6 +46,8 @@ class Tracker
     $this->browserUserAgent = $browserUserAgent;
     $this->redirectCompleted = $redirectCompleted;
     $this->redirectCompletedAt = $redirectCompletedAt;
+    $this->coordinates = $coordinates;
+    $this->isp = $isp;
     $this->createdAt = $createdAt ?? new \DateTime();
   }
 
@@ -104,6 +110,16 @@ class Tracker
   public function getRedirectCompletedAt(): ?\DateTime
   {
     return $this->redirectCompletedAt;
+  }
+
+  public function getCoordinates(): ?array
+  {
+    return $this->coordinates;
+  }
+
+  public function getIsp(): ?string
+  {
+    return $this->isp;
   }
 
   public function markRedirectCompleted(): void

@@ -9,6 +9,19 @@
             </div>
         </div>
 
+        <div class="search-container">
+            <form method="GET" action="/admin/links" class="search-form">
+                <div class="search-input-group">
+                    <input type="text" name="search" value="{{ $searchQuery ?? '' }}"
+                        placeholder="Search by code, URL, or title..." class="search-input">
+                    <button type="submit" class="search-btn">Search</button>
+                    @if (isset($searchQuery) && !empty($searchQuery))
+                        <a href="/admin/links" class="clear-search-btn">Clear</a>
+                    @endif
+                </div>
+            </form>
+        </div>
+
         <div class="table-container">
             <table class="data-table">
                 <thead>
@@ -73,11 +86,13 @@
                 <div class="pagination-info">Page {{ $currentPage ?? 1 }} of {{ $totalPages ?? 1 }}</div>
 
                 @if (($currentPage ?? 1) > 1)
-                    <a href="/admin/links?page={{ ($currentPage ?? 1) - 1 }}" class="btn">Previous</a>
+                    <a href="/admin/links?page={{ ($currentPage ?? 1) - 1 }}{{ isset($searchQuery) && !empty($searchQuery) ? '&search=' . urlencode($searchQuery) : '' }}"
+                        class="btn">Previous</a>
                 @endif
 
                 @if (($currentPage ?? 1) < ($totalPages ?? 1))
-                    <a href="/admin/links?page={{ ($currentPage ?? 1) + 1 }}" class="btn">Next</a>
+                    <a href="/admin/links?page={{ ($currentPage ?? 1) + 1 }}{{ isset($searchQuery) && !empty($searchQuery) ? '&search=' . urlencode($searchQuery) : '' }}"
+                        class="btn">Next</a>
                 @endif
             @endif
         </div>

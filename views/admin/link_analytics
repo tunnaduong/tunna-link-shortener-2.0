@@ -49,6 +49,13 @@
             </div>
         </div>
 
+        <div class="analytics-section">
+            <h3>Location Map</h3>
+            <div class="map-container">
+                <div id="visitMap" style="height: 400px; width: 100%; border-radius: 8px;"></div>
+            </div>
+        </div>
+
         <div class="analytics-sections">
             <div class="analytics-section">
                 <h3>Visits by Browser</h3>
@@ -122,6 +129,34 @@
             </div>
 
             <div class="analytics-section">
+                <h3>Visits by ISP</h3>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ISP</th>
+                                <th>Visits</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (isset($visitStats['visitsByIsp']))
+                                @foreach ($visitStats['visitsByIsp'] as $isp)
+                                    <tr>
+                                        <td>{{ $isp['isp'] ?? 'Unknown' }}</td>
+                                        <td>{{ $isp['count'] }}</td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="2">No ISP data available</td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="analytics-section">
                 <h3>Recent Visits</h3>
                 <div class="table-container">
                     <table class="data-table">
@@ -129,6 +164,7 @@
                             <tr>
                                 <th>IP Address</th>
                                 <th>Location</th>
+                                <th>ISP</th>
                                 <th>Browser</th>
                                 <th>OS</th>
                                 <th>Screen Size</th>
@@ -156,9 +192,19 @@
                                             '</a>';
                                     }
                                 @endphp
+                                @php
+                                    $coordinates = null;
+                                    if (isset($visit['coordinates']) && $visit['coordinates']) {
+                                        $coords = json_decode($visit['coordinates'], true);
+                                        if ($coords && isset($coords['latitude']) && isset($coords['longitude'])) {
+                                            $coordinates = $coords['latitude'] . ', ' . $coords['longitude'];
+                                        }
+                                    }
+                                @endphp
                                 <tr>
                                     <td>{{ $visit['ip_address'] }}</td>
                                     <td>{{ $visit['location'] ?? 'Unknown' }}</td>
+                                    <td>{{ $visit['isp'] ?? 'Unknown' }}</td>
                                     <td>{{ $visit['browser'] ?? 'Unknown' }}</td>
                                     <td>{{ $visit['OS'] ?? 'Unknown' }}</td>
                                     <td>{{ $visit['screen_size'] ?? 'Unknown' }}</td>
@@ -172,4 +218,42 @@
             </div>
         </div>
     </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize map
+            const map = L.map('visitMap').setView([0, 0], 2);
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Get coordinates from the table
+            const coordinateElements = document.querySelectorAll('.coordinates');
+            const markers = [];
+
+            coordinateElements.forEach(function(element) {
+                const lat = parseFloat(element.dataset.lat);
+                const lng = parseFloat(element.dataset.lng);
+
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    const marker = L.marker([lat, lng]).addTo(map);
+                    marker.bindPopup(element.textContent);
+                    markers.push(marker);
+                }
+            });
+
+            // Fit map to show all markers
+            if (markers.length > 0) {
+                const group = new L.featureGroup(markers);
+                map.fitBounds(group.getBounds().pad(0.1));
+            } else {
+                // Default view if no coordinates
+                map.setView([20, 0], 2);
+            }
+        });
+    </script>
 @endsection

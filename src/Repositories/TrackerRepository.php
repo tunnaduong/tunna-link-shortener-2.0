@@ -23,10 +23,12 @@ class TrackerRepository
       $stmt = $pdo->prepare("
                 INSERT INTO tracker (
                     ref_code, ref_url, ip_address, location, screen_size, 
-                    browser, OS, browser_user_agent, redirect_completed, redirect_completed_at
+                    browser, OS, browser_user_agent, redirect_completed, redirect_completed_at,
+                    coordinates, isp
                 ) VALUES (
                     :ref_code, :ref_url, :ip_address, :location, :screen_size,
-                    :browser, :operating_system, :browser_user_agent, :redirect_completed, :redirect_completed_at
+                    :browser, :operating_system, :browser_user_agent, :redirect_completed, :redirect_completed_at,
+                    :coordinates, :isp
                 )
             ");
 
@@ -40,6 +42,8 @@ class TrackerRepository
       $browserUserAgent = $tracker->getBrowserUserAgent();
       $redirectCompleted = $tracker->isRedirectCompleted() ? 1 : 0;
       $redirectCompletedAt = $tracker->getRedirectCompletedAt() ? $tracker->getRedirectCompletedAt()->format('Y-m-d H:i:s') : null;
+      $coordinates = $tracker->getCoordinates() ? json_encode($tracker->getCoordinates()) : null;
+      $isp = $tracker->getIsp();
 
       $stmt->bindParam(':ref_code', $refCode);
       $stmt->bindParam(':ref_url', $refUrl);
@@ -51,6 +55,8 @@ class TrackerRepository
       $stmt->bindParam(':browser_user_agent', $browserUserAgent);
       $stmt->bindParam(':redirect_completed', $redirectCompleted);
       $stmt->bindParam(':redirect_completed_at', $redirectCompletedAt);
+      $stmt->bindParam(':coordinates', $coordinates);
+      $stmt->bindParam(':isp', $isp);
 
       return $stmt->execute();
     } catch (PDOException $e) {
@@ -115,6 +121,12 @@ class TrackerRepository
     $redirectCompleted = isset($row['redirect_completed']) ? (bool) $row['redirect_completed'] : false;
     $redirectCompletedAt = isset($row['redirect_completed_at']) && $row['redirect_completed_at'] ? new \DateTime($row['redirect_completed_at']) : null;
 
+    // Parse coordinates from JSON
+    $coordinates = null;
+    if (isset($row['coordinates']) && $row['coordinates']) {
+      $coordinates = json_decode($row['coordinates'], true);
+    }
+
     return new Tracker(
       $row['ref_code'],
       $row['ip_address'],
@@ -127,6 +139,8 @@ class TrackerRepository
       $row['browser_user_agent'],
       $redirectCompleted,
       $redirectCompletedAt,
+      $coordinates,
+      $row['isp'] ?? null,
       $createdAt
     );
   }

@@ -94,18 +94,20 @@ class AdminController
 
     try {
       $page = $_GET['page'] ?? 1;
+      $searchQuery = $_GET['search'] ?? '';
       $limit = 20;
       $offset = ($page - 1) * $limit;
 
-      $links = $this->getAllLinks($limit, $offset);
-      $totalLinks = $this->getTotalLinksCount();
+      $links = $this->getAllLinks($limit, $offset, $searchQuery);
+      $totalLinks = $this->getTotalLinksCount($searchQuery);
       $totalPages = ceil($totalLinks / $limit);
 
       $this->viewRenderer->render('admin/links', [
         'links' => $links,
         'currentPage' => $page,
         'totalPages' => $totalPages,
-        'totalLinks' => $totalLinks
+        'totalLinks' => $totalLinks,
+        'searchQuery' => $searchQuery
       ]);
     } catch (\Exception $e) {
       $this->viewRenderer->render('admin/error', [
@@ -506,33 +508,68 @@ class AdminController
     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
   }
 
-  private function getAllLinks(int $limit, int $offset): array
+  private function getAllLinks(int $limit, int $offset, string $searchQuery = ''): array
   {
     $dbConfig = new DatabaseConfig();
     $dbConnection = DatabaseConnection::getInstance($dbConfig);
     $pdo = $dbConnection->getConnection();
+
+    $whereClause = '';
+    $params = [':limit' => $limit, ':offset' => $offset];
+
+    if (!empty($searchQuery)) {
+      $whereClause = "WHERE l.code LIKE :search_code OR l.next_url LIKE :search_url OR l.link_title LIKE :search_title";
+      $params[':search_code'] = '%' . $searchQuery . '%';
+      $params[':search_url'] = '%' . $searchQuery . '%';
+      $params[':search_title'] = '%' . $searchQuery . '%';
+    }
 
     $stmt = $pdo->prepare("
             SELECT l.*, 
                    (SELECT COUNT(*) FROM tracker t WHERE t.ref_code = l.code) as visit_count
             FROM links l 
+            {$whereClause}
             ORDER BY l.created_at DESC 
             LIMIT :limit OFFSET :offset
         ");
-    $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
-    $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
+
+    foreach ($params as $key => $value) {
+      if ($key === ':limit' || $key === ':offset') {
+        $stmt->bindValue($key, $value, \PDO::PARAM_INT);
+      } else {
+        $stmt->bindValue($key, $value, \PDO::PARAM_STR);
+      }
+    }
+
     $stmt->execute();
 
     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
   }
 
-  private function getTotalLinksCount(): int
+  private function getTotalLinksCount(string $searchQuery = ''): int
   {
     $dbConfig = new DatabaseConfig();
     $dbConnection = DatabaseConnection::getInstance($dbConfig);
     $pdo = $dbConnection->getConnection();
 
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM links");
+    $whereClause = '';
+    $params = [];
+
+    if (!empty($searchQuery)) {
+      $whereClause = "WHERE code LIKE :search_code OR next_url LIKE :search_url OR link_title LIKE :search_title";
+      $params[':search_code'] = '%' . $searchQuery . '%';
+      $params[':search_url'] = '%' . $searchQuery . '%';
+      $params[':search_title'] = '%' . $searchQuery . '%';
+    }
+
+    $sql = "SELECT COUNT(*) as total FROM links {$whereClause}";
+    $stmt = $pdo->prepare($sql);
+
+    foreach ($params as $key => $value) {
+      $stmt->bindValue($key, $value, \PDO::PARAM_STR);
+    }
+
+    $stmt->execute();
     return $stmt->fetch()['total'];
   }
 
@@ -610,13 +647,26 @@ class AdminController
     $stmt->execute();
     $visitsByReferrer = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+    // Visits by ISP
+    $stmt = $pdo->prepare("
+            SELECT isp, COUNT(*) as count 
+            FROM tracker 
+            WHERE BINARY ref_code = :code AND isp IS NOT NULL AND isp != ''
+            GROUP BY isp 
+            ORDER BY count DESC
+        ");
+    $stmt->bindParam(':code', $code);
+    $stmt->execute();
+    $visitsByIsp = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
     return [
       'totalVisits' => $totalVisits,
       'completedRedirects' => $completedRedirects,
       'completionRate' => $completionRate,
       'visitsByBrowser' => $visitsByBrowser,
       'visitsByLocation' => $visitsByLocation,
-      'visitsByReferrer' => $visitsByReferrer
+      'visitsByReferrer' => $visitsByReferrer,
+      'visitsByIsp' => $visitsByIsp
     ];
   }
 

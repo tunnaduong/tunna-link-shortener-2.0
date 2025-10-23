@@ -30,7 +30,12 @@ class TrackerService
 
     $browser = $this->userAgentParser->getBrowser($userAgent);
     $operatingSystem = $this->userAgentParser->getOperatingSystem($userAgent);
-    $location = $this->ipGeolocation->getLocation($ipAddress);
+
+    // Get full geolocation data including coordinates and ISP
+    $geoData = $this->ipGeolocation->getFullGeolocationData($ipAddress);
+    $location = $geoData['location'];
+    $coordinates = $geoData['coordinates'];
+    $isp = $geoData['isp'];
 
     // Enhanced referrer detection
     $referrer = $this->getEnhancedReferrer($data);
@@ -41,6 +46,7 @@ class TrackerService
     // Debug logging
     error_log("Tracking Debug - Code: $code, IP: $ipAddress, UserAgent: $userAgent");
     error_log("Tracking Debug - Browser: $browser, OS: $operatingSystem, Location: $location");
+    error_log("Tracking Debug - Coordinates: " . json_encode($coordinates) . ", ISP: $isp");
     error_log("Tracking Debug - Screen Size: $screenSize, Referrer: $referrer");
 
     $tracker = new Tracker(
@@ -52,7 +58,11 @@ class TrackerService
       $screenSize,
       $browser,
       $operatingSystem,
-      $userAgent
+      $userAgent,
+      false,
+      null,
+      $coordinates,
+      $isp
     );
 
     $success = $this->trackerRepository->create($tracker);
