@@ -48,7 +48,9 @@
                                                 ? 'Captcha'
                                                 : ($link['redirect_type'] == 3
                                                     ? 'Password'
-                                                    : 'Unknown')));
+                                                    : ($link['redirect_type'] == 4
+                                                        ? 'Instant'
+                                                        : 'Unknown'))));
                             @endphp
                             <tr>
                                 <td><a href="/{{ $link['code'] }}" target="_blank"

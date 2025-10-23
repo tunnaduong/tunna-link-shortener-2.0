@@ -47,6 +47,12 @@ class LinkController
         return;
       }
 
+      // Handle instant redirect (type 4) - no ads, just tracking + redirect
+      if (isset($result['instant']) && $result['instant']) {
+        $this->handleInstantRedirectWithOpenGraph($url, $result['link']);
+        return;
+      }
+
       // For redirect type links, add Open Graph meta tags before redirecting
       $this->handleRedirectWithOpenGraph($url, $result['link']);
       return;
@@ -307,6 +313,98 @@ class LinkController
             // Redirect to destination after tracking is complete
             window.location.href = \'' . htmlspecialchars($url, ENT_QUOTES) . '\';
         }, 3000);
+    </script>
+</body>
+</html>';
+
+    // Output the HTML directly
+    header('Content-Type: text/html; charset=UTF-8');
+    echo $html;
+    exit;
+  }
+
+  private function handleInstantRedirectWithOpenGraph(string $url, $link): void
+  {
+    // Use only link data for faster redirect - no OpenGraph extraction
+    $title = $link->getLinkTitle() ?: 'Tunna Link Shortener';
+    $description = $link->getLinkExcerpt() ?: 'Click to continue to the destination';
+    $image = $link->getLinkPreviewUrl() ?: '/assets/images/link.jpg';
+    $siteName = 'Tunna Link Shortener';
+
+    // Create minimal HTML with Open Graph meta tags and synchronous tracking
+    $html = '<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>' . htmlspecialchars($title) . '</title>
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="' . htmlspecialchars($title) . '">
+    <meta property="og:description" content="' . htmlspecialchars($description) . '">
+    <meta property="og:image" content="' . htmlspecialchars($image) . '">
+    <meta property="og:url" content="' . htmlspecialchars($url) . '">
+    <meta property="og:site_name" content="' . htmlspecialchars($siteName) . '">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="' . htmlspecialchars($title) . '">
+    <meta name="twitter:description" content="' . htmlspecialchars($description) . '">
+    <meta name="twitter:image" content="' . htmlspecialchars($image) . '">
+</head>
+<body>
+    <script>
+        (function() {
+            try {
+                // Get tracking data
+                var width = window.screen.width;
+                var height = window.screen.height;
+                var referrer = document.referrer;
+                
+                // Fallback for screen size if not available
+                if (!width || !height) {
+                    width = window.innerWidth || document.documentElement.clientWidth || 0;
+                    height = window.innerHeight || document.documentElement.clientHeight || 0;
+                }
+                
+                var data = {
+                    id: "' . $link->getCode() . '",
+                    size: width + \'x\' + height,
+                    ref: referrer
+                };
+                
+                console.log(\'Instant redirect tracking data:\', data);
+                
+                // Step 1: Track visit (synchronous)
+                var xhr1 = new XMLHttpRequest();
+                xhr1.open(\'POST\', \'/api/tracker\', false); // false = synchronous
+                xhr1.setRequestHeader(\'Content-Type\', \'application/x-www-form-urlencoded\');
+                xhr1.send(new URLSearchParams(data).toString());
+                
+                var trackerResponse = JSON.parse(xhr1.responseText);
+                console.log(\'Visit tracking response:\', trackerResponse);
+                
+                // Step 2: Track completion (synchronous)
+                if (trackerResponse.tracker_id) {
+                    var xhr2 = new XMLHttpRequest();
+                    xhr2.open(\'POST\', \'/api/tracker/complete\', false); // false = synchronous
+                    xhr2.setRequestHeader(\'Content-Type\', \'application/x-www-form-urlencoded\');
+                    xhr2.send(\'tracker_id=\' + encodeURIComponent(trackerResponse.tracker_id));
+                    
+                    var completionResponse = JSON.parse(xhr2.responseText);
+                    console.log(\'Completion tracking response:\', completionResponse);
+                }
+                
+                // Step 3: Redirect immediately after tracking is complete
+                window.location.href = \'' . htmlspecialchars($url, ENT_QUOTES) . '\';
+                
+            } catch (error) {
+                console.error(\'Instant redirect tracking error:\', error);
+                // Redirect anyway if tracking fails
+                window.location.href = \'' . htmlspecialchars($url, ENT_QUOTES) . '\';
+            }
+        })();
     </script>
 </body>
 </html>';

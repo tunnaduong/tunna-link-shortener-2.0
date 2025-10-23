@@ -207,6 +207,11 @@ class Link
     return ($this->redirectType === 1 || $this->redirectType === 3) && $this->hasPassword(); // 1=click, 3=pwd
   }
 
+  public function isInstantRedirect(): bool
+  {
+    return $this->redirectType === 4; // 4=instant redirect
+  }
+
   public function verifyPassword(string $password): bool
   {
     return $this->password === $password;

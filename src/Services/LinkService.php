@@ -102,6 +102,16 @@ class LinkService
       ];
     }
 
+    if ($link->isInstantRedirect()) {
+      return [
+        'success' => true,
+        'redirect' => true,
+        'url' => $link->getNextUrl(),
+        'link' => $link,
+        'instant' => true
+      ];
+    }
+
     return [
       'success' => true,
       'redirect' => false,

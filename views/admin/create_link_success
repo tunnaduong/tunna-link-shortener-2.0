@@ -46,6 +46,8 @@
                             reCAPTCHA Protected
                         @elseif($link->getRedirectType() == 3)
                             Password Protected
+                        @elseif($link->getRedirectType() == 4)
+                            Instant Redirect (No Ads)
                         @else
                             Unknown
                         @endif
