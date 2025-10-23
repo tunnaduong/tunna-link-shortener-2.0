@@ -41,11 +41,8 @@ class LinkController
     if ($result['redirect']) {
       $url = $result['url'];
 
-      // Handle javascript: URLs specially
-      if (strpos($url, 'javascript:') === 0) {
-        $this->handleJavaScriptUrl($url);
-        return;
-      }
+      // Handle javascript: URLs as normal links (type=1 click behavior)
+      // No special handling - let them go through normal link display flow
 
       // Handle instant redirect (type 4) - no ads, just tracking + redirect
       if (isset($result['instant']) && $result['instant']) {
@@ -235,7 +232,7 @@ class LinkController
             </a>
         </div>
         
-        <a href="' . htmlspecialchars($url, ENT_QUOTES) . '" target="_blank" class="btn" id="destinationBtn" onclick="trackRedirectCompletion()">
+        <a href="#" class="btn" id="destinationBtn" onclick="handleDestinationClick()">
             📱 Mở liên kết đích
         </a>
         <br>
@@ -296,6 +293,27 @@ class LinkController
             trackerId: null
         };
         
+        // Handle destination click for both JavaScript and regular URLs
+        function handleDestinationClick() {
+            var destinationUrl = \'' . htmlspecialchars($url, ENT_QUOTES) . '\';
+            if (destinationUrl.startsWith(\'javascript:\')) {
+                // Execute JavaScript code
+                try {
+                    var jsCode = destinationUrl.substring(11); // Remove "javascript:" prefix
+                    // Decode HTML entities in JavaScript code
+                    jsCode = jsCode.replace(/&#039;/g, "\'").replace(/&quot;/g, \'"\').replace(/&amp;/g, \'&\').replace(/&lt;/g, \'<\').replace(/&gt;/g, \'>\');
+                    eval(jsCode);
+                } catch (e) {
+                    alert(\'Error executing JavaScript: \' + e.message);
+                }
+            } else {
+                // Regular redirect
+                window.location.href = destinationUrl;
+            }
+            // Track the click
+            trackRedirectCompletion();
+        }
+        
         // Auto-redirect for direct redirect type with completion tracking
         setTimeout(async function() {
             // Set tracker ID and track completion before redirect
@@ -310,8 +328,22 @@ class LinkController
                 }
             }
             
-            // Redirect to destination after tracking is complete
-            window.location.href = \'' . htmlspecialchars($url, ENT_QUOTES) . '\';
+            // Handle JavaScript URLs or regular redirects
+            var destinationUrl = \'' . htmlspecialchars($url, ENT_QUOTES) . '\';
+            if (destinationUrl.startsWith(\'javascript:\')) {
+                // Execute JavaScript code
+                try {
+                    var jsCode = destinationUrl.substring(11); // Remove "javascript:" prefix
+                    // Decode HTML entities in JavaScript code
+                    jsCode = jsCode.replace(/&#039;/g, "\'").replace(/&quot;/g, \'"\').replace(/&amp;/g, \'&\').replace(/&lt;/g, \'<\').replace(/&gt;/g, \'>\');
+                    eval(jsCode);
+                } catch (e) {
+                    alert(\'Error executing JavaScript: \' + e.message);
+                }
+            } else {
+                // Regular redirect
+                window.location.href = destinationUrl;
+            }
         }, 3000);
     </script>
 </body>

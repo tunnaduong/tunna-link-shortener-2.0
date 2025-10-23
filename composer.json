@@ -1,5 +1,5 @@
 {
-  "name": "tunna/link-shortener",
+  "name": "tunnaduong/tunna-link-shortener-3.0",
   "description": "A clean architecture link shortener application",
   "type": "project",
   "require": {

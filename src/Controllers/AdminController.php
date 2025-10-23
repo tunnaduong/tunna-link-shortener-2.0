@@ -926,8 +926,8 @@ class AdminController
       return;
     }
 
-    // Validate URL
-    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+    // Validate URL - allow javascript: URLs
+    if (!filter_var($url, FILTER_VALIDATE_URL) && strpos($url, 'javascript:') !== 0) {
       http_response_code(400);
       echo json_encode(['error' => 'Invalid URL']);
       return;
@@ -956,6 +956,12 @@ class AdminController
       $adsImgUrl = !empty($_GET['ads_img_url']) ? $_GET['ads_img_url'] : null;
       $adsClickUrl = !empty($_GET['ads_click_url']) ? $_GET['ads_click_url'] : null;
       $adsPromotedBy = !empty($_GET['ads_promoted_by']) ? $_GET['ads_promoted_by'] : null;
+
+      // Handle JavaScript URLs specially
+      if (strpos($url, 'javascript:') === 0) {
+        $linkTitle = $linkTitle ?: 'JavaScript Execution';
+        $linkExcerpt = $linkExcerpt ?: 'Execute JavaScript code';
+      }
 
       // Generate random code
       $code = $this->generateRandomCode();
