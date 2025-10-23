@@ -94,7 +94,7 @@
                             <input type="file" id="ads_image_file" name="ads_image_file" accept="image/*"
                                 class="image-upload-input">
                             <div class="image-upload-preview" id="image-preview">
-                                @if ($link->getAdsImgUrl())
+                                @if (!empty($link->getAdsImgUrl()))
                                     <img src="{{ $link->getAdsImgUrl() }}"
                                         style="max-width: 100%; max-height: 200px; border-radius: 4px;">
                                 @else
@@ -103,21 +103,21 @@
                             </div>
                         </div>
                         <input type="hidden" id="ads_img_url" name="ads_img_url"
-                            value="{{ $link->getAdsImgUrl() ?? '' }}">
+                            value="{{ !empty($link->getAdsImgUrl()) ? $link->getAdsImgUrl() : '' }}">
                         <small>Upload an image for advertisement display</small>
                     </div>
 
                     <div class="form-group">
                         <label for="ads_click_url">Ad Click URL</label>
                         <input type="url" id="ads_click_url" name="ads_click_url"
-                            value="{{ $link->getAdsClickUrl() ?? '' }}">
+                            value="{{ !empty($link->getAdsClickUrl()) ? $link->getAdsClickUrl() : '' }}">
                         <small>URL to redirect to when ad is clicked</small>
                     </div>
 
                     <div class="form-group">
                         <label for="ads_promoted_by">Promoted By</label>
                         <input type="text" id="ads_promoted_by" name="ads_promoted_by"
-                            value="{{ $link->getAdsPromotedBy() ?? '' }}">
+                            value="{{ !empty($link->getAdsPromotedBy()) ? $link->getAdsPromotedBy() : '' }}">
                         <small>Who is promoting this ad</small>
                     </div>
                 </div>

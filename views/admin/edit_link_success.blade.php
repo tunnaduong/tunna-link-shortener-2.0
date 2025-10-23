@@ -66,7 +66,7 @@
                     </div>
                     <div class="info-item">
                         <strong>Advertisement Image:</strong>
-                        @if ($link->getAdsImgUrl())
+                        @if (!empty($link->getAdsImgUrl()))
                             <a href="{{ $link->getAdsImgUrl() }}" target="_blank">View Ad Image</a>
                         @else
                             None
@@ -74,7 +74,7 @@
                     </div>
                     <div class="info-item">
                         <strong>Ad Click URL:</strong>
-                        @if ($link->getAdsClickUrl())
+                        @if (!empty($link->getAdsClickUrl()))
                             <a href="{{ $link->getAdsClickUrl() }}" target="_blank">{{ $link->getAdsClickUrl() }}</a>
                         @else
                             None
@@ -82,7 +82,7 @@
                     </div>
                     <div class="info-item">
                         <strong>Promoted By:</strong>
-                        {{ $link->getAdsPromotedBy() ?? 'None' }}
+                        {{ !empty($link->getAdsPromotedBy()) ? $link->getAdsPromotedBy() : 'None' }}
                     </div>
                 </div>
             </div>
