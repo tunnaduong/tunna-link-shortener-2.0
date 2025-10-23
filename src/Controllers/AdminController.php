@@ -73,10 +73,14 @@ class AdminController
       // Get recent visits
       $recentVisits = $this->getRecentVisits(10);
 
+      // Get daily series for last 30 days
+      $dailySeries = $this->getDailySeries(30);
+
       $this->viewRenderer->render('admin/dashboard', [
         'stats' => $stats,
         'recentLinks' => $recentLinks,
-        'recentVisits' => $recentVisits
+        'recentVisits' => $recentVisits,
+        'dailySeries' => $dailySeries
       ]);
     } catch (\Exception $e) {
       $this->viewRenderer->render('admin/error', [
@@ -467,6 +471,61 @@ class AdminController
       'visitsTrend' => $visitsTrend,
       'redirectsTrend' => $redirectsTrend,
       'completionTrend' => $completionTrend
+    ];
+  }
+
+  private function getDailySeries(int $days = 30): array
+  {
+    // Build daily time series for visits and completed redirects
+    $dbConfig = new DatabaseConfig();
+    $dbConnection = DatabaseConnection::getInstance($dbConfig);
+    $pdo = $dbConnection->getConnection();
+
+    // Calculate start date so we have exactly $days data points including today
+    $startDate = new \DateTime();
+    $startDate->setTime(0, 0, 0);
+    $startDate->modify('-' . ($days - 1) . ' days');
+    $fromDate = $startDate->format('Y-m-d');
+
+    $stmt = $pdo->prepare("
+            SELECT DATE(time_of_visit) AS date,
+                   COUNT(*) AS visits,
+                   SUM(CASE WHEN redirect_completed = 1 THEN 1 ELSE 0 END) AS completed
+            FROM tracker
+            WHERE DATE(time_of_visit) >= :from_date
+            GROUP BY DATE(time_of_visit)
+            ORDER BY date ASC
+        ");
+    $stmt->bindParam(':from_date', $fromDate);
+    $stmt->execute();
+    $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+    $byDate = [];
+    foreach ($rows as $row) {
+      $dateKey = $row['date'];
+      $byDate[$dateKey] = [
+        'visits' => (int) ($row['visits'] ?? 0),
+        'completed' => (int) ($row['completed'] ?? 0)
+      ];
+    }
+
+    $labels = [];
+    $visits = [];
+    $completed = [];
+
+    $current = clone $startDate;
+    for ($i = 0; $i < $days; $i++) {
+      $dateKey = $current->format('Y-m-d');
+      $labels[] = $current->format('M j');
+      $visits[] = $byDate[$dateKey]['visits'] ?? 0;
+      $completed[] = $byDate[$dateKey]['completed'] ?? 0;
+      $current->modify('+1 day');
+    }
+
+    return [
+      'labels' => $labels,
+      'visits' => $visits,
+      'completed' => $completed
     ];
   }
 
