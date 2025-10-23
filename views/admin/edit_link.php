@@ -76,7 +76,7 @@ $content = '
                     <div class="image-upload-container">
                         <input type="file" id="ads_image_file" name="ads_image_file" accept="image/*" class="image-upload-input">
                         <div class="image-upload-preview" id="image-preview">
-                            ' . ($link->getAdsImgUrl() ? '<img src="' . htmlspecialchars($link->getAdsImgUrl()) . '" style="max-width: 100%; max-height: 200px; border-radius: 4px;">' : '<span class="upload-text">Click to upload image or drag & drop</span>') . '
+                            ' . (!empty($link->getAdsImgUrl()) ? '<img src="' . htmlspecialchars($link->getAdsImgUrl()) . '" style="max-width: 100%; max-height: 200px; border-radius: 4px;">' : '<span class="upload-text">Click to upload image or drag & drop</span>') . '
                         </div>
                     </div>
                     <input type="hidden" id="ads_img_url" name="ads_img_url" value="' . htmlspecialchars($link->getAdsImgUrl() ?? '') . '">

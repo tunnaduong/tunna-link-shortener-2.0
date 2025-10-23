@@ -36,14 +36,14 @@ class LinkService
       $data['wait_seconds'] ?? 10,
       $data['countdown_delay'] ?? 1000,
       null,
-      $data['link_title'] ?? null,
-      $data['link_excerpt'] ?? null,
-      $data['link_preview_url'] ?? null,
+      !empty($data['link_title']) ? $data['link_title'] : null,
+      !empty($data['link_excerpt']) ? $data['link_excerpt'] : null,
+      !empty($data['link_preview_url']) ? $data['link_preview_url'] : null,
       $data['password'] ?? null,
       $data['tag'] ?? null,
-      $data['ads_click_url'] ?? null,
-      $data['ads_img_url'] ?? null,
-      $data['ads_promoted_by'] ?? null
+      !empty($data['ads_click_url']) ? $data['ads_click_url'] : null,
+      !empty($data['ads_img_url']) ? $data['ads_img_url'] : null,
+      !empty($data['ads_promoted_by']) ? $data['ads_promoted_by'] : null
     );
 
     if (!$this->linkRepository->create($link)) {

@@ -170,9 +170,9 @@ class AdminController
       try {
         $nextUrl = $_POST['next_url'] ?? '';
         $customCode = $_POST['custom_code'] ?? '';
-        $linkTitle = $_POST['link_title'] ?? '';
-        $linkExcerpt = $_POST['link_excerpt'] ?? '';
-        $linkPreviewUrl = $_POST['link_preview_url'] ?? '';
+        $linkTitle = !empty($_POST['link_title']) ? $_POST['link_title'] : null;
+        $linkExcerpt = !empty($_POST['link_excerpt']) ? $_POST['link_excerpt'] : null;
+        $linkPreviewUrl = !empty($_POST['link_preview_url']) ? $_POST['link_preview_url'] : null;
         $password = $_POST['password'] ?? '';
         $redirectType = (int) ($_POST['redirect_type'] ?? 0);
         $waitSeconds = (int) ($_POST['wait_seconds'] ?? 10);
@@ -720,9 +720,9 @@ class AdminController
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       try {
         $nextUrl = $_POST['next_url'] ?? '';
-        $linkTitle = $_POST['link_title'] ?? '';
-        $linkExcerpt = $_POST['link_excerpt'] ?? '';
-        $linkPreviewUrl = $_POST['link_preview_url'] ?? '';
+        $linkTitle = !empty($_POST['link_title']) ? $_POST['link_title'] : null;
+        $linkExcerpt = !empty($_POST['link_excerpt']) ? $_POST['link_excerpt'] : null;
+        $linkPreviewUrl = !empty($_POST['link_preview_url']) ? $_POST['link_preview_url'] : null;
         $password = $_POST['password'] ?? '';
         $redirectType = (int) ($_POST['redirect_type'] ?? 0);
         $waitSeconds = (int) ($_POST['wait_seconds'] ?? 10);
@@ -888,14 +888,14 @@ class AdminController
       // Parse additional parameters
       $redirectType = (int) ($_GET['type'] ?? 0);
       $waitSeconds = (int) ($_GET['wait'] ?? 10);
-      $linkTitle = $_GET['title'] ?? '';
-      $linkExcerpt = $_GET['excerpt'] ?? '';
-      $linkPreviewUrl = $_GET['preview_url'] ?? '';
+      $linkTitle = !empty($_GET['title']) ? $_GET['title'] : null;
+      $linkExcerpt = !empty($_GET['excerpt']) ? $_GET['excerpt'] : null;
+      $linkPreviewUrl = !empty($_GET['preview_url']) ? $_GET['preview_url'] : null;
       $password = $_GET['password'] ?? '';
       $tag = $_GET['tag'] ?? '';
-      $adsImgUrl = $_GET['ads_img_url'] ?? null;
-      $adsClickUrl = $_GET['ads_click_url'] ?? null;
-      $adsPromotedBy = $_GET['ads_promoted_by'] ?? null;
+      $adsImgUrl = !empty($_GET['ads_img_url']) ? $_GET['ads_img_url'] : null;
+      $adsClickUrl = !empty($_GET['ads_click_url']) ? $_GET['ads_click_url'] : null;
+      $adsPromotedBy = !empty($_GET['ads_promoted_by']) ? $_GET['ads_promoted_by'] : null;
 
       // Generate random code
       $code = $this->generateRandomCode();
@@ -943,6 +943,26 @@ class AdminController
         $urlsText = $_POST['urls'] ?? '';
         $defaultRedirectType = (int) ($_POST['default_redirect_type'] ?? 0);
         $defaultWaitSeconds = (int) ($_POST['default_wait_seconds'] ?? 10);
+
+        // Get ads settings from batch form
+        $batchAdsImgUrl = !empty($_POST['batch_ads_img_url']) ? $_POST['batch_ads_img_url'] : null;
+        $batchAdsClickUrl = !empty($_POST['batch_ads_click_url']) ? $_POST['batch_ads_click_url'] : null;
+        $batchAdsPromotedBy = !empty($_POST['batch_ads_promoted_by']) ? $_POST['batch_ads_promoted_by'] : null;
+
+        // Handle batch ads image upload
+        try {
+          if (isset($_FILES['batch_ads_image_file']) && $_FILES['batch_ads_image_file']['error'] === UPLOAD_ERR_OK) {
+            $batchAdsImgUrl = $this->fileUploadService->uploadImage($_FILES['batch_ads_image_file'], 'ads');
+          } elseif (!empty($batchAdsImgUrl) && strpos($batchAdsImgUrl, 'data:image') === 0) {
+            // Handle base64 data
+            $batchAdsImgUrl = $this->fileUploadService->uploadFromBase64($batchAdsImgUrl, 'ads');
+          }
+        } catch (\Exception $e) {
+          $this->viewRenderer->render('admin/error', [
+            'error' => 'Batch ads image upload failed: ' . $e->getMessage()
+          ]);
+          return;
+        }
 
         if (empty($urlsText)) {
           $this->viewRenderer->render('admin/error', [
@@ -1035,16 +1055,16 @@ class AdminController
             $linkData = [
               'code' => $code,
               'next_url' => $url,
-              'link_title' => '', // Default empty title for batch processing
-              'link_excerpt' => '', // Default empty excerpt
-              'link_preview_url' => '', // Default empty preview URL
+              'link_title' => null, // Default null for batch processing
+              'link_excerpt' => null, // Default null
+              'link_preview_url' => null, // Default null
               'redirect_type' => $redirectType,
               'wait_seconds' => $waitSeconds,
               'password' => $password,
               'tag' => $tag,
-              'ads_img_url' => '', // Default empty ads image URL
-              'ads_click_url' => '', // Default empty ads click URL
-              'ads_promoted_by' => '' // Default empty ads promoted by
+              'ads_img_url' => $batchAdsImgUrl, // Use batch ads settings
+              'ads_click_url' => $batchAdsClickUrl, // Use batch ads settings
+              'ads_promoted_by' => $batchAdsPromotedBy // Use batch ads settings
             ];
 
             $link = $this->linkService->createLink($linkData);

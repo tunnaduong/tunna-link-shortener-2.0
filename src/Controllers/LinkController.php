@@ -134,9 +134,9 @@ class LinkController
     $defaultAdsPromotedBy = 'tunnaAds';
 
     // Use link ad data if available, otherwise use defaults
-    $adsImgUrl = $link->getAdsImgUrl() ?: $defaultAdsImgUrl;
-    $adsClickUrl = $link->getAdsClickUrl() ?: $defaultAdsClickUrl;
-    $adsPromotedBy = $link->getAdsPromotedBy() ?: $defaultAdsPromotedBy;
+    $adsImgUrl = (!empty($link->getAdsImgUrl())) ? $link->getAdsImgUrl() : $defaultAdsImgUrl;
+    $adsClickUrl = (!empty($link->getAdsClickUrl())) ? $link->getAdsClickUrl() : $defaultAdsClickUrl;
+    $adsPromotedBy = (!empty($link->getAdsPromotedBy())) ? $link->getAdsPromotedBy() : $defaultAdsPromotedBy;
 
     // Create HTML with Open Graph meta tags
     $html = '<!DOCTYPE html>

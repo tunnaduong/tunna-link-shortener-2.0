@@ -190,6 +190,36 @@ $pageTitle = 'Create New Link';
           <input type="number" id="default_wait_seconds" name="default_wait_seconds" min="0" max="60" value="10">
         </div>
 
+        <div class="form-section">
+          <h3>Advertisement Settings (Applied to All URLs)</h3>
+
+          <div class="form-group">
+            <label for="batch_ads_img_url">Advertisement Image</label>
+            <div class="image-upload-container">
+              <input type="file" id="batch_ads_image_file" name="batch_ads_image_file" accept="image/*"
+                class="image-upload-input">
+              <div class="image-upload-preview" id="batch-image-preview">
+                <span class="upload-text">Click to upload image or drag & drop</span>
+              </div>
+            </div>
+            <input type="hidden" id="batch_ads_img_url" name="batch_ads_img_url" value="">
+            <small>Upload an image for advertisement display (applied to all URLs)</small>
+          </div>
+
+          <div class="form-group">
+            <label for="batch_ads_click_url">Ad Click URL</label>
+            <input type="url" id="batch_ads_click_url" name="batch_ads_click_url" placeholder="https://example.com/ads">
+            <small>URL where users will be redirected when clicking the ad</small>
+          </div>
+
+          <div class="form-group">
+            <label for="batch_ads_promoted_by">Promoted By</label>
+            <input type="text" id="batch_ads_promoted_by" name="batch_ads_promoted_by"
+              placeholder="Company Name or Brand">
+            <small>Name of the company or brand promoting the ad</small>
+          </div>
+        </div>
+
         <div class="form-actions">
           <button type="submit" class="btn">Shorten All URLs</button>
           <button type="button" class="btn btn-secondary" onclick="clearBatchForm()">Clear</button>
@@ -222,6 +252,11 @@ $pageTitle = 'Create New Link';
   // Clear batch form
   function clearBatchForm() {
     document.getElementById('batch_urls').value = '';
+    document.getElementById('batch_ads_click_url').value = '';
+    document.getElementById('batch_ads_promoted_by').value = '';
+    document.getElementById('batch_ads_img_url').value = '';
+    document.getElementById('batch_ads_image_file').value = '';
+    document.getElementById('batch-image-preview').innerHTML = '<span class="upload-text">Click to upload image or drag & drop</span>';
   }
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -334,6 +369,49 @@ $pageTitle = 'Create New Link';
     // Preview image click to upload
     previewImagePreview.addEventListener("click", function () {
       previewImageUploadInput.click();
+    });
+
+    // Batch ads image upload functionality
+    const batchAdsImageUploadInput = document.getElementById("batch_ads_image_file");
+    const batchAdsImagePreview = document.getElementById("batch-image-preview");
+    const batchAdsImgUrlInput = document.getElementById("batch_ads_img_url");
+
+    batchAdsImageUploadInput.addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          batchAdsImagePreview.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 200px; border-radius: 4px;">`;
+          batchAdsImgUrlInput.value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Batch ads image drag and drop functionality
+    batchAdsImagePreview.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      batchAdsImagePreview.style.backgroundColor = "#f0f0f0";
+    });
+
+    batchAdsImagePreview.addEventListener("dragleave", function (e) {
+      e.preventDefault();
+      batchAdsImagePreview.style.backgroundColor = "";
+    });
+
+    batchAdsImagePreview.addEventListener("drop", function (e) {
+      e.preventDefault();
+      batchAdsImagePreview.style.backgroundColor = "";
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        batchAdsImageUploadInput.files = files;
+        batchAdsImageUploadInput.dispatchEvent(new Event("change"));
+      }
+    });
+
+    // Click to upload batch ads image
+    batchAdsImagePreview.addEventListener("click", function () {
+      batchAdsImageUploadInput.click();
     });
 
     // Auto-extract OpenGraph on paste

@@ -51,15 +51,15 @@ $content = '
                 </div>
                 <div class="info-item">
                     <strong>Advertisement Image:</strong>
-                    ' . ($link->getAdsImgUrl() ? '<a href="' . htmlspecialchars($link->getAdsImgUrl()) . '" target="_blank">View Ad Image</a>' : 'None') . '
+                    ' . (!empty($link->getAdsImgUrl()) ? '<a href="' . htmlspecialchars($link->getAdsImgUrl()) . '" target="_blank">View Ad Image</a>' : 'None') . '
                 </div>
                 <div class="info-item">
                     <strong>Ad Click URL:</strong>
-                    ' . ($link->getAdsClickUrl() ? '<a href="' . htmlspecialchars($link->getAdsClickUrl()) . '" target="_blank">' . htmlspecialchars($link->getAdsClickUrl()) . '</a>' : 'None') . '
+                    ' . (!empty($link->getAdsClickUrl()) ? '<a href="' . htmlspecialchars($link->getAdsClickUrl()) . '" target="_blank">' . htmlspecialchars($link->getAdsClickUrl()) . '</a>' : 'None') . '
                 </div>
                 <div class="info-item">
                     <strong>Promoted By:</strong>
-                    ' . htmlspecialchars($link->getAdsPromotedBy() ?? 'None') . '
+                    ' . htmlspecialchars(!empty($link->getAdsPromotedBy()) ? $link->getAdsPromotedBy() : 'None') . '
                 </div>
             </div>
         </div>
