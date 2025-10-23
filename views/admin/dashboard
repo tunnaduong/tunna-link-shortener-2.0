@@ -79,6 +79,13 @@
 
         <div class="dashboard-sections">
             <div class="dashboard-section">
+                <h3>Activity - Last 30 Days</h3>
+                <div class="chart-container" style="position: relative; height: 320px;">
+                    <canvas id="visitsChart" height="320"></canvas>
+                </div>
+            </div>
+
+            <div class="dashboard-section">
                 <h3>Recent Links</h3>
                 <div class="table-container">
                     <table class="data-table">
@@ -159,4 +166,64 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (function () {
+            const series = {!! json_encode($dailySeries ?? ['labels' => [], 'visits' => [], 'completed' => []]) !!};
+            const ctx = document.getElementById('visitsChart');
+            if (!ctx || !series || !Array.isArray(series.labels)) return;
+
+            const data = {
+                labels: series.labels,
+                datasets: [
+                    {
+                        label: 'Visits',
+                        data: series.visits,
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                        tension: 0.3,
+                        fill: true,
+                        borderWidth: 2,
+                        pointRadius: 2,
+                        pointHoverRadius: 4,
+                    },
+                    {
+                        label: 'Completed Redirects',
+                        data: series.completed,
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                        tension: 0.3,
+                        fill: true,
+                        borderWidth: 2,
+                        pointRadius: 2,
+                        pointHoverRadius: 4,
+                    }
+                ]
+            };
+
+            new Chart(ctx, {
+                type: 'line',
+                data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        tooltip: { enabled: true }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 }
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
 @endsection
