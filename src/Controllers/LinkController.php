@@ -133,7 +133,7 @@ class LinkController
 
     // Default advertisement settings
     $defaultAdsImgUrl = '/assets/images/1.gif';
-    $defaultAdsClickUrl = 'https://tunn.ad';
+    $defaultAdsClickUrl = 'https://zalo.me/0365520031';
     $defaultAdsPromotedBy = 'tunnaAds';
 
     // Use link ad data if available, otherwise use defaults
