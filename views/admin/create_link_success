@@ -14,7 +14,8 @@
                     <div class="info-item">
                         <strong>Short Code:</strong>
                         <code class="link-code">
-                            <a href="{{ $_ENV['APP_URL'] ?? 'https://tunn.ad' }}/{{ $link->getCode() }}" target="_blank">
+                            <a href="{{ $_ENV['APP_URL'] ?? 'https://tunn.ad' }}/{{ $link->getCode() }}" class="url-link"
+                                target="_blank">
                                 {{ $link->getCode() }}
                             </a>
                         </code>
