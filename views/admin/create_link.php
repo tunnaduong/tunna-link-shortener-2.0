@@ -159,8 +159,11 @@ $pageTitle = 'Create New Link';
         <ul>
           <li><strong>Simple:</strong> <code>https://example.com</code></li>
           <li><strong>Advanced:</strong> <code>https://example.com|type|wait|password|tag</code></li>
+          <li><strong>With Custom Code:</strong> <code>https://example.com|myshortcode|type|wait|password|tag</code>
+          </li>
         </ul>
-        <p><strong>Parameters:</strong> type (0=direct, 1=click, 2=captcha, 3=password), wait (seconds), password, tag
+        <p><strong>Parameters:</strong> custom_code (optional), type (0=direct, 1=click, 2=captcha, 3=password), wait
+          (seconds), password, tag
         </p>
       </div>
 
@@ -168,7 +171,7 @@ $pageTitle = 'Create New Link';
         <div class="form-group">
           <label for="batch_urls">URLs to Shorten</label>
           <textarea id="batch_urls" name="urls" rows="10"
-            placeholder="https://example.com&#10;https://another-site.com|1|5|mypassword|marketing&#10;https://third-site.com"></textarea>
+            placeholder="https://example.com&#10;https://another-site.com|1|5|mypassword|marketing&#10;https://third-site.com|myshortcode|1|5|password|marketing&#10;https://fourth-site.com"></textarea>
           <small>Enter one URL per line. Use the advanced format for custom settings.</small>
         </div>
 

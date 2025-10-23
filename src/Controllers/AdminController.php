@@ -963,7 +963,7 @@ class AdminController
             continue;
 
           try {
-            // Parse URL line - support both simple and advanced format
+            // Parse URL line - support simple, advanced, and custom code format
             $parts = explode('|', $urlLine);
             $url = trim($parts[0]);
 
@@ -977,7 +977,46 @@ class AdminController
               continue;
             }
 
-            // Check if link already exists
+            // Determine format and parse parameters
+            $customCode = '';
+            $redirectType = $defaultRedirectType;
+            $waitSeconds = $defaultWaitSeconds;
+            $password = '';
+            $tag = '';
+
+            if (count($parts) >= 2) {
+              // Check if second parameter is a number (old format) or custom code (new format)
+              if (is_numeric($parts[1])) {
+                // Old format: url|type|wait|password|tag
+                $redirectType = isset($parts[1]) ? (int) $parts[1] : $defaultRedirectType;
+                $waitSeconds = isset($parts[2]) ? (int) $parts[2] : $defaultWaitSeconds;
+                $password = isset($parts[3]) ? trim($parts[3]) : '';
+                $tag = isset($parts[4]) ? trim($parts[4]) : '';
+              } else {
+                // New format: url|customcode|type|wait|password|tag
+                $customCode = trim($parts[1]);
+                $redirectType = isset($parts[2]) ? (int) $parts[2] : $defaultRedirectType;
+                $waitSeconds = isset($parts[3]) ? (int) $parts[3] : $defaultWaitSeconds;
+                $password = isset($parts[4]) ? trim($parts[4]) : '';
+                $tag = isset($parts[5]) ? trim($parts[5]) : '';
+              }
+            }
+
+            // Validate custom code if provided
+            if (!empty($customCode)) {
+              // Check if custom code already exists
+              $existingLinkByCode = $this->linkService->getLinkByCode($customCode);
+              if ($existingLinkByCode) {
+                $results['errors'][] = [
+                  'line' => $index + 1,
+                  'url' => $url,
+                  'error' => 'Custom code "' . $customCode . '" already exists'
+                ];
+                continue;
+              }
+            }
+
+            // Check if link already exists by URL
             $existingLink = $this->linkService->getLinkByNextUrl($url);
             if ($existingLink) {
               $results['duplicates'][] = [
@@ -989,14 +1028,8 @@ class AdminController
               continue;
             }
 
-            // Parse advanced parameters if provided
-            $redirectType = isset($parts[1]) ? (int) $parts[1] : $defaultRedirectType;
-            $waitSeconds = isset($parts[2]) ? (int) $parts[2] : $defaultWaitSeconds;
-            $password = isset($parts[3]) ? trim($parts[3]) : '';
-            $tag = isset($parts[4]) ? trim($parts[4]) : '';
-
-            // Generate random code
-            $code = $this->generateRandomCode();
+            // Generate code (custom or random)
+            $code = !empty($customCode) ? $customCode : $this->generateRandomCode();
 
             // Create the link
             $linkData = [
