@@ -213,6 +213,7 @@ class LinkController
             100% { transform: rotate(360deg); }
         }
     </style>
+    <script src="/assets/js/script.js"></script>
 </head>
 <body>
     <div class="container">
@@ -283,32 +284,27 @@ class LinkController
             }
         })();
         
-        // Function to track redirect completion
-        function trackRedirectCompletion() {
+        // Set global linkData for tracking
+        window.linkData = {
+            code: "' . $link->getCode() . '",
+            trackerId: null
+        };
+        
+        // Auto-redirect for direct redirect type with completion tracking
+        setTimeout(async function() {
+            // Set tracker ID and track completion before redirect
             const trackerId = localStorage.getItem(\'tracker_id_\' + "' . $link->getCode() . '");
             if (trackerId) {
-                // Use sendBeacon for reliable tracking even if page unloads
-                if (navigator.sendBeacon) {
-                    const data = new FormData();
-                    data.append(\'tracker_id\', trackerId);
-                    navigator.sendBeacon(\'/api/tracker/complete\', data);
-                } else {
-                    // Fallback to fetch
-                    fetch(\'/api/tracker/complete\', {
-                        method: \'POST\',
-                        headers: {
-                            \'Content-Type\': \'application/x-www-form-urlencoded\',
-                        },
-                        body: \'tracker_id=\' + encodeURIComponent(trackerId)
-                    }).catch(error => {
-                        console.error(\'Completion tracking error:\', error);
-                    });
+                window.linkData.trackerId = trackerId;
+                try {
+                    await handleTrackDidContinue();
+                    console.log(\'Tracking completion successful\');
+                } catch (error) {
+                    console.error(\'Completion tracking error:\', error);
                 }
             }
-        }
-        
-        // Redirect current page to destination after a short delay
-        setTimeout(function() {
+            
+            // Redirect to destination after tracking is complete
             window.location.href = \'' . htmlspecialchars($url, ENT_QUOTES) . '\';
         }, 3000);
     </script>
