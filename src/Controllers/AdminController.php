@@ -864,30 +864,40 @@ class AdminController
       return;
     }
 
-    // Validate URL
-    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+    // Validate URL - allow javascript: URLs
+    if (!filter_var($url, FILTER_VALIDATE_URL) && strpos($url, 'javascript:') !== 0) {
       http_response_code(400);
       echo json_encode(['error' => 'Invalid URL']);
       return;
     }
 
     try {
-      $ogTags = $this->openGraphService->extractOpenGraphTags($url);
+      // Handle javascript: URLs specially
+      if (strpos($url, 'javascript:') === 0) {
+        $jsCode = substr($url, 11); // Remove "javascript:" prefix
+        $ogTags = [
+          'title' => 'JavaScript Execution',
+          'description' => 'Execute JavaScript code',
+          'url' => $url
+        ];
+      } else {
+        $ogTags = $this->openGraphService->extractOpenGraphTags($url);
 
-      // Check if we got any meaningful data
-      $hasData = false;
-      foreach ($ogTags as $key => $value) {
-        if ($value && $key !== 'url' && strlen(trim($value)) > 0) {
-          $hasData = true;
-          break;
+        // Check if we got any meaningful data
+        $hasData = false;
+        foreach ($ogTags as $key => $value) {
+          if ($value && $key !== 'url' && strlen(trim($value)) > 0) {
+            $hasData = true;
+            break;
+          }
         }
-      }
 
-      if (!$hasData) {
-        // Provide fallback data
-        $ogTags['title'] = parse_url($url, PHP_URL_HOST) ?: 'Website';
-        $ogTags['description'] = 'No Open Graph data found for this URL';
-        $ogTags['site_name'] = parse_url($url, PHP_URL_HOST) ?: 'Website';
+        if (!$hasData) {
+          // Provide fallback data
+          $ogTags['title'] = parse_url($url, PHP_URL_HOST) ?: 'Website';
+          $ogTags['description'] = 'No Open Graph data found for this URL';
+          $ogTags['site_name'] = parse_url($url, PHP_URL_HOST) ?: 'Website';
+        }
       }
 
       echo json_encode(['success' => true, 'data' => $ogTags]);
@@ -1037,8 +1047,8 @@ class AdminController
             $parts = explode('|', $urlLine);
             $url = trim($parts[0]);
 
-            // Validate URL
-            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            // Validate URL - allow javascript: URLs
+            if (!filter_var($url, FILTER_VALIDATE_URL) && strpos($url, 'javascript:') !== 0) {
               $results['errors'][] = [
                 'line' => $index + 1,
                 'url' => $url,
