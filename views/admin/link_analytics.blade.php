@@ -194,16 +194,35 @@
                                 @endphp
                                 @php
                                     $coordinates = null;
+                                    $lat = null;
+                                    $lng = null;
                                     if (isset($visit['coordinates']) && $visit['coordinates']) {
                                         $coords = json_decode($visit['coordinates'], true);
-                                        if ($coords && isset($coords['latitude']) && isset($coords['longitude'])) {
-                                            $coordinates = $coords['latitude'] . ', ' . $coords['longitude'];
+                                        if ($coords && isset($coords['lat']) && isset($coords['lng'])) {
+                                            $lat = $coords['lat'];
+                                            $lng = $coords['lng'];
+                                            $coordinates = $lat . ', ' . $lng;
+                                        } elseif (
+                                            $coords &&
+                                            isset($coords['latitude']) &&
+                                            isset($coords['longitude'])
+                                        ) {
+                                            $lat = $coords['latitude'];
+                                            $lng = $coords['longitude'];
+                                            $coordinates = $lat . ', ' . $lng;
                                         }
                                     }
                                 @endphp
                                 <tr>
                                     <td>{{ $visit['ip_address'] }}</td>
-                                    <td>{{ $visit['location'] ?? 'Unknown' }}</td>
+                                    <td>
+                                        {{ $visit['location'] ?? 'Unknown' }}
+                                        @if ($coordinates)
+                                            <span class="coordinates" data-lat="{{ $lat }}"
+                                                data-lng="{{ $lng }}"
+                                                style="display: none;">{{ $coordinates }}</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $visit['isp'] ?? 'Unknown' }}</td>
                                     <td>{{ $visit['browser'] ?? 'Unknown' }}</td>
                                     <td>{{ $visit['OS'] ?? 'Unknown' }}</td>

@@ -1246,13 +1246,14 @@ class AdminController
       $dbConnection = DatabaseConnection::getInstance($dbConfig);
       $pdo = $dbConnection->getConnection();
 
-      // Get all unique locations with visit counts
+      // Get all unique locations with visit counts and coordinates
       $sql = "SELECT 
                 location, 
                 COUNT(*) as visit_count,
                 GROUP_CONCAT(DISTINCT ip_address) as ip_addresses,
-                MIN(created_at) as first_visit,
-                MAX(created_at) as last_visit
+                MIN(time_of_visit) as first_visit,
+                MAX(time_of_visit) as last_visit,
+                (SELECT coordinates FROM tracker t2 WHERE t2.location = tracker.location AND t2.coordinates IS NOT NULL LIMIT 1) as coordinates
               FROM tracker 
               WHERE location IS NOT NULL 
                 AND location != 'Unknown' 
@@ -1264,8 +1265,12 @@ class AdminController
       $locations = [];
 
       while ($row = $stmt->fetch()) {
-        // Parse location to get coordinates if possible
-        $coordinates = $this->getCoordinatesFromLocation($row['location']);
+        // Parse coordinates from stored JSON data
+        $coordinates = null;
+        if (!empty($row['coordinates'])) {
+          $coordinates = json_decode($row['coordinates'], true);
+        }
+
 
         $locations[] = [
           'location' => $row['location'],
