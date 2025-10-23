@@ -20,7 +20,7 @@ class ViewRenderer
       mkdir($this->cachePath, 0755, true);
     }
 
-    // Sync BladeOne templates (create copies without .blade.php extension)
+    // Sync BladeOne templates (create copies without .blade.php extension for compatibility)
     $this->syncBladeTemplates();
 
     // Initialize BladeOne
@@ -111,4 +111,5 @@ class ViewRenderer
       $this->syncBladeTemplatesRecursive($subdir);
     }
   }
+
 }
