@@ -47,6 +47,7 @@ body {
 
 .login-form {
   margin-bottom: 1.5rem;
+  width: 300px;
 }
 
 .login-form input {
@@ -304,6 +305,11 @@ body {
 }
 
 /* Tables */
+/* Chọn div cha có chứa .table-container */
+div:has(.table-container) {
+  overflow: hidden;
+}
+
 .table-container {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
@@ -441,6 +447,10 @@ body {
 .analytics-sections {
   display: grid;
   gap: 2rem;
+}
+
+.analytics-section {
+  overflow: hidden;
 }
 
 .analytics-section h3 {

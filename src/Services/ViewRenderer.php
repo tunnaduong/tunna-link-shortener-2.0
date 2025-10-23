@@ -2,86 +2,54 @@
 
 namespace App\Services;
 
+use eftec\bladeone\BladeOne;
+
 class ViewRenderer
 {
+  private $blade;
   private $viewsPath;
-  private $layoutsPath;
+  private $cachePath;
 
-  public function __construct(string $viewsPath = __DIR__ . '/../../views', string $layoutsPath = __DIR__ . '/../../views/layouts')
+  public function __construct(string $viewsPath = __DIR__ . '/../../views', string $cachePath = __DIR__ . '/../../cache/views')
   {
     $this->viewsPath = $viewsPath;
-    $this->layoutsPath = $layoutsPath;
+    $this->cachePath = $cachePath;
+
+    // Create cache directory if it doesn't exist
+    if (!is_dir($this->cachePath)) {
+      mkdir($this->cachePath, 0755, true);
+    }
+
+    // Sync BladeOne templates (create copies without .blade.php extension for compatibility)
+    $this->syncBladeTemplates();
+
+    // Initialize BladeOne
+    $this->blade = new BladeOne($this->viewsPath, $this->cachePath, BladeOne::MODE_DEBUG);
+
+    // Set the file extension explicitly
+    $this->blade->setFileExtension('.blade.php');
+
+    // Add custom directives and functions
+    $this->setupBladeDirectives();
   }
 
   public function render(string $view, array $data = []): void
   {
-    $viewFile = $this->viewsPath . '/' . $view . '.php';
-
-    if (!file_exists($viewFile)) {
-      throw new \Exception("View file not found: {$viewFile}");
-    }
-
-    // Check if this is an admin view by the view path, but exclude login page
-    $isAdminView = strpos($view, 'admin/') === 0 && $view !== 'admin/login';
-
-    // Extract data to variables
-    extract($data);
-
-    // Start output buffering
-    ob_start();
-
-    // Include the view file
-    include $viewFile;
-
-    // Get the content
-    $content = ob_get_clean();
-
-    // Render with appropriate layout
-    $this->renderWithLayout($content, $data, $isAdminView);
-  }
-
-  private function renderWithLayout(string $content, array $data, bool $isAdminView = false): void
-  {
-    // Check if this is a complete HTML page (like login) that doesn't need a layout
-    if (strpos($content, '<!DOCTYPE html>') !== false || strpos($content, '<html') !== false) {
-      // This is already a complete HTML page, just output it
-      echo $content;
-      return;
-    }
-
-    if ($isAdminView) {
-      // Use admin layout for admin views
-      $layoutFile = $this->viewsPath . '/admin/layout.php';
-      if (file_exists($layoutFile)) {
-        extract($data);
-        include $layoutFile;
-      } else {
-        echo $content;
-      }
-    } else {
-      // Use main layout for regular views
-      $layoutFile = $this->layoutsPath . '/main.php';
-      if (file_exists($layoutFile)) {
-        extract($data);
-        include $layoutFile;
-      } else {
-        echo $content;
-      }
+    try {
+      // Render the view with BladeOne
+      echo $this->blade->run($view, $data);
+    } catch (\Exception $e) {
+      throw new \Exception("Error rendering view '{$view}': " . $e->getMessage());
     }
   }
 
   public function renderPartial(string $partial, array $data = []): string
   {
-    $partialFile = $this->viewsPath . '/partials/' . $partial . '.php';
-
-    if (!file_exists($partialFile)) {
-      throw new \Exception("Partial file not found: {$partialFile}");
+    try {
+      return $this->blade->run("partials.{$partial}", $data);
+    } catch (\Exception $e) {
+      throw new \Exception("Error rendering partial '{$partial}': " . $e->getMessage());
     }
-
-    extract($data);
-    ob_start();
-    include $partialFile;
-    return ob_get_clean();
   }
 
   public function __call(string $method, array $arguments): string
@@ -93,4 +61,55 @@ class ViewRenderer
     }
     throw new \Exception("Method {$method} not found");
   }
+
+  private function setupBladeDirectives(): void
+  {
+    // Add custom directives for common functionality
+    $this->blade->directive('datetime', function ($expression) {
+      return "<?php echo date('Y-m-d H:i:s', $expression); ?>";
+    });
+
+    $this->blade->directive('moment', function ($expression) {
+      return "<?php echo '<script>document.write(moment(' . $expression . ').locale(\"vi\").fromNow());</script>'; ?>";
+    });
+
+    $this->blade->directive('csrf', function () {
+      return "<?php echo '<input type=\"hidden\" name=\"_token\" value=\"' . session_id() . '\">'; ?>";
+    });
+
+    // Add helper functions
+    $this->blade->directive('asset', function ($expression) {
+      return "<?php echo '/assets' . $expression; ?>";
+    });
+
+    $this->blade->directive('url', function ($expression) {
+      return "<?php echo $expression; ?>";
+    });
+  }
+
+  private function syncBladeTemplates(): void
+  {
+    $this->syncBladeTemplatesRecursive($this->viewsPath);
+  }
+
+  private function syncBladeTemplatesRecursive(string $directory): void
+  {
+    $files = glob($directory . '/*.blade.php');
+
+    foreach ($files as $file) {
+      $targetFile = str_replace('.blade.php', '', $file);
+
+      // Only create the copy if it doesn't exist or if the source is newer
+      if (!file_exists($targetFile) || filemtime($file) > filemtime($targetFile)) {
+        copy($file, $targetFile);
+      }
+    }
+
+    // Recursively process subdirectories
+    $subdirs = glob($directory . '/*', GLOB_ONLYDIR);
+    foreach ($subdirs as $subdir) {
+      $this->syncBladeTemplatesRecursive($subdir);
+    }
+  }
+
 }
