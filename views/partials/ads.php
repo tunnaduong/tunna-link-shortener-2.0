@@ -1,6 +1,6 @@
 <?php
 $adsUrl = $link->getAdsClickUrl() ?? "https://zalo.me/0365520031";
-$adsImg = $link->getAdsImgUrl() ?? "/assets/images/demo.gif";
+$adsImg = $link->getAdsImgUrl() ?? "/assets/images/1.gif";
 $promotedBy = $link->getAdsPromotedBy() ?? "tunnaAds";
 ?>
 <a href="<?= htmlspecialchars($adsUrl) ?>" id="ads">

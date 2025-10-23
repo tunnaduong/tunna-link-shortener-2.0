@@ -129,7 +129,7 @@ class LinkController
     $siteName = 'Tunna Link Shortener';
 
     // Default advertisement settings
-    $defaultAdsImgUrl = '/assets/images/demo.gif';
+    $defaultAdsImgUrl = '/assets/images/1.gif';
     $defaultAdsClickUrl = 'https://tunn.ad';
     $defaultAdsPromotedBy = 'tunnaAds';
 
