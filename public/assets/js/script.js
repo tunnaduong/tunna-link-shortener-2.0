@@ -54,47 +54,96 @@ function fbShare() {
 }
 
 function openNewWindow(url) {
-  // Track redirect completion when user actually clicks to continue
-  // Wait for tracking to complete before proceeding
-  handleTrackDidContinue().then(() => {
-    // Check if it's a javascript: URL
-    if (url.startsWith("javascript:")) {
-      // Extract the JavaScript code
-      const jsCode = url.substring(11); // Remove "javascript:" prefix
+  // Track redirect completion using sendBeacon (preferred) or image fallback
+  trackRedirectCompletion();
 
-      // Create a new window and execute the JavaScript
-      const newWindow = window.open("", "_blank");
-      if (newWindow) {
-        newWindow.document.write(`
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <title>JavaScript Execution</title>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          </head>
-          <body>
-            <script>
-              try {
-                ${jsCode.replace(/'/g, "'")}
-              } catch (e) {
-                alert('Error executing JavaScript: ' + e.message);
-              }
-            </script>
-          </body>
-          </html>
-        `);
-        newWindow.document.close();
-      }
-    } else {
-      // For regular URLs, use the normal window.open
-      window.open(url, "_blank");
+  // Check if it's a javascript: URL
+  if (url.startsWith("javascript:")) {
+    // Extract the JavaScript code
+    const jsCode = url.substring(11); // Remove "javascript:" prefix
+
+    // Create a new window and execute the JavaScript
+    const newWindow = window.open("", "_blank");
+    if (newWindow) {
+      newWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>JavaScript Execution</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body>
+          <script>
+            try {
+              ${jsCode.replace(/'/g, "'")}
+            } catch (e) {
+              alert('Error executing JavaScript: ' + e.message);
+            }
+          </script>
+        </body>
+        </html>
+      `);
+      newWindow.document.close();
     }
+  } else {
+    // For regular URLs, use the normal window.open
+    window.open(url, "_blank");
+  }
 
-    setTimeout(function () {
-      window.location.href = "https://shope.ee/7zlMOzSB7w";
-    }, 1000);
-  });
+  setTimeout(function () {
+    window.location.href = "https://shope.ee/7zlMOzSB7w";
+  }, 1500);
+}
+
+// Function to track redirect completion using sendBeacon or image fallback
+function trackRedirectCompletion() {
+  try {
+    // Get tracker ID from global variable set by PHP
+    const trackerId = window.linkData?.trackerId;
+    const linkCode =
+      window.linkData?.code || window.location.pathname.substring(1);
+
+    if (trackerId) {
+      console.log("Tracking redirect completion for tracker ID:", trackerId);
+
+      // Prepare tracking data
+      const trackingData = "tracker_id=" + encodeURIComponent(trackerId);
+
+      // Try sendBeacon first (preferred method)
+      if (navigator.sendBeacon) {
+        // sendBeacon expects FormData or Blob for POST data
+        const formData = new FormData();
+        formData.append("tracker_id", trackerId);
+
+        const success = navigator.sendBeacon("/api/tracker/complete", formData);
+        if (success) {
+          console.log("Redirect completion tracked via sendBeacon");
+          return;
+        }
+      }
+
+      // Fallback: Use image beacon
+      console.log("Using image beacon fallback for tracking");
+      const img = new Image();
+      img.onload = function () {
+        console.log("Redirect completion tracked via image beacon");
+      };
+      img.onerror = function () {
+        console.log(
+          "Image beacon tracking completed (may have failed silently)"
+        );
+      };
+
+      // Create tracking URL with parameters
+      const trackingUrl = "/api/tracker/complete?" + trackingData;
+      img.src = trackingUrl;
+    } else {
+      console.log("No tracker ID found for link code:", linkCode);
+    }
+  } catch (error) {
+    console.error("Error in trackRedirectCompletion:", error);
+  }
 }
 
 // Function to track redirect completion (simplified: only use fetch POST)
